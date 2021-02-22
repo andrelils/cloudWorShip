@@ -1,0 +1,99 @@
+.page-list-detail {
+  .list-top {
+    position: relative;
+    width: 100%;
+
+    img {
+      width: 100%;
+    }
+
+    .list-btn {
+      width: 0.8rem;
+      height: 0.8rem;
+      left: calc(50% - 0.4rem);
+      bottom: -0.4rem;
+      position: absolute;
+      background: rgb(184, 116, 26);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 999;
+      color: #fff;
+
+
+      .add-icon {
+        font-size: 0.35rem;
+        font-weight: bold;
+      }
+    }
+  }
+
+  .list-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 0.43rem;
+
+    .container-item {
+      padding: 0.1rem;
+      display: flex;
+      flex-direction: column;
+
+
+      .item-top {
+        display: flex;
+
+        .item-img {
+          margin-right: 0.1rem;
+        }
+
+        .top-detail {
+          display: flex;
+          flex-direction: column;
+
+          span {
+            color: #7F7F7F;
+            font-size: 0.14rem;
+          }
+
+          .detail-name {
+            display: flex;
+            font-size: 0.16rem;
+            margin-bottom: 0.05rem;
+
+            span {
+              color: black;
+            }
+
+            .item-edit {
+              flex: 1;
+              text-align: right;
+
+              img {
+                width: 0.19rem;
+                height: 0.19rem;
+              }
+            }
+          }
+        }
+      }
+
+      .item-footer {
+        display: flex;
+        justify-content: flex-end;
+        padding: 0.1rem 0;
+        border-bottom: 1px solid gray;
+
+        div {
+          background-color: rgb(126, 181, 148);
+          color: #fff;
+          border-radius: 0.06rem;
+          padding: 0.01rem 0.03rem;
+          margin-right: 0.1rem;
+        }
+      }
+    }
+  }
+}

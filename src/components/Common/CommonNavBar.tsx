@@ -33,7 +33,7 @@ const CommonNavBar = (props: CommonNavBarProps) => {
         }}
         key={Math.random()}
       >
-        <Icon type="left" key={Math.random()} />
+        <Icon color="black" type="left" key={Math.random()} />
         <span key={Math.random()}>返回</span>
       </div>,
     ],
@@ -95,7 +95,7 @@ const CommonNavBar = (props: CommonNavBarProps) => {
           {children ? children : title}
         </NavBar>
       )}
-      <WhiteSpace style={{ height: searching ? "0.1rem" : "0.56rem" }} />
+      <WhiteSpace style={{ height: searching ? "0.1rem" : "0.45rem" }} />
     </>
   );
 };
