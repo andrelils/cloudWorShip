@@ -30,7 +30,12 @@ const ListDetail = (): React.ReactElement => {
       <CommonNavBar title="云祭扫"></CommonNavBar>
       <div className="list-top">
         <img src="/imgs/list-bg.jpg" alt="" />
-        <div className="list-btn">
+        <div
+          className="list-btn"
+          onClick={() => {
+            history.push("/editeDetail");
+          }}
+        >
           <div className="add-icon">+</div>
           <span>祈福堂</span>
         </div>

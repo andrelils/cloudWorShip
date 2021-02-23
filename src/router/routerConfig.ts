@@ -1,6 +1,7 @@
 import Home from "../pages/Home/index";
 import List from "../pages/List/index";
 import ListDetail from "../pages/ListDetail/index";
+import EditeDetail from "../pages/EditeDetail/index";
 import { commonConfig } from "../shared/config/";
 
 let routes = [
@@ -21,6 +22,12 @@ let routes = [
     text: "列表详情页",
     path: commonConfig.routeBasePath + "/listDetail/:id",
     component: ListDetail,
+  },
+  {
+    name: "编辑详情页",
+    text: "编辑详情页",
+    path: commonConfig.routeBasePath + "/editeDetail",
+    component: EditeDetail,
   },
 ];
 
