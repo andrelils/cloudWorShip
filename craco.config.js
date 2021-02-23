@@ -38,7 +38,7 @@ module.exports = isDev
         configure: (webpackConfig, { env, paths }) => {
           webpackConfig.output = {
             ...webpackConfig.output,
-            publicPath: "/itsc-mobile",
+            publicPath: "",
           };
           return webpackConfig;
         },

@@ -51,7 +51,12 @@ const ListDetail = (): React.ReactElement => {
                 <div className="top-detail">
                   <div className="detail-name">
                     <span>{item.name}</span>
-                    <div className="item-edit">
+                    <div
+                      className="item-edit"
+                      onClick={() => {
+                        history.push(`/editeDetail?id=${item.id}`);
+                      }}
+                    >
                       <img alt="" src="/imgs/edit.png" />
                     </div>
                   </div>
@@ -62,7 +67,14 @@ const ListDetail = (): React.ReactElement => {
               </div>
               <div className="item-footer">
                 <div className="item-shared">分享祈福堂</div>
-                <div className="item-enter">进入祈福堂</div>
+                <div
+                  className="item-enter"
+                  onClick={() => {
+                    history.push(`/hall/${item.id}`);
+                  }}
+                >
+                  进入祈福堂
+                </div>
               </div>
             </div>
           );

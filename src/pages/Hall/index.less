@@ -1,0 +1,75 @@
+.page-hall {
+  height: 100%;
+
+  .hall-container {
+    height: calc(100% - 0.45rem);
+
+    .hall-bg {
+      position: relative;
+      height: calc(100% - 2.5rem);
+
+      .dm {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 1.45rem;
+        height: 1.3rem;
+        padding: 0.2rem 0.1rem;
+        font-size: 0.12rem;
+        background-color: rgba(51, 51, 51, 0.6);
+        color: #fff;
+        z-index: 999;
+        overflow-y: auto;
+
+        .dm-item {
+          margin-bottom: 0.05rem;
+          height: 0.15rem;
+          width: 100%;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+
+          img {
+            width: 0.15rem;
+            height: 0.15rem;
+            margin-right: 0.02rem;
+          }
+        }
+      }
+
+      img {
+        width: 100%;
+        height: 100%;
+      }
+
+      .tx-group {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 999;
+        width: 100%;
+        height: 100%;
+
+        img {
+          width: 0.78rem;
+          height: 0.78rem;
+          margin-right: 0.1rem;
+        }
+      }
+    }
+
+    .hall-footer {
+      height: 2.5rem;
+      background-color: black;
+      padding: 0.05rem 0.1rem;
+
+      span {
+        color: #fff;
+      }
+    }
+
+  }
+}
