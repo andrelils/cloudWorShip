@@ -2,11 +2,13 @@
   height: 100%;
 
   .hall-container {
-    height: calc(100% - 0.45rem);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 
     .hall-bg {
       position: relative;
-      height: calc(100% - 2.5rem);
+      flex: 1;
 
       .dm {
         position: absolute;
@@ -49,7 +51,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        z-index: 999;
+        z-index: 998;
         width: 100%;
         height: 100%;
 
@@ -62,12 +64,23 @@
     }
 
     .hall-footer {
-      height: 2.5rem;
       background-color: black;
       padding: 0.05rem 0.1rem;
 
       span {
         color: #fff;
+      }
+
+      .operate-group {
+        padding: 0.1rem 0;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+
+        img {
+          width: 0.5rem;
+          height: 0.5rem;
+        }
       }
     }
 

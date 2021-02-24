@@ -26,7 +26,7 @@ const Home = (): React.ReactElement => {
         <div
           className="container-item"
           onClick={() => {
-            history.push("/list");
+            history.push("/sweepingOptions");
           }}
         >
           <div className="item-icon">

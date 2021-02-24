@@ -30,13 +30,15 @@ const ListDetail = (): React.ReactElement => {
       <CommonNavBar title="云祭扫"></CommonNavBar>
       <div className="list-top">
         <img src="/imgs/list-bg.jpg" alt="" />
-        <div
-          className="list-btn"
-          onClick={() => {
-            history.push("/editeDetail");
-          }}
-        >
-          <div className="add-icon">+</div>
+        <div className="list-btn-all">
+          <img
+            className="list-btn"
+            src="/imgs/add.png"
+            alt=""
+            onClick={() => {
+              history.push("/editeDetail");
+            }}
+          ></img>
           <span>祈福堂</span>
         </div>
       </div>
@@ -79,6 +81,12 @@ const ListDetail = (): React.ReactElement => {
             </div>
           );
         })}
+        {list.length == 0 && (
+          <div className="empty">
+            <img src="/imgs/empty.png" alt="" />
+            <span>请先创建祈福堂</span>
+          </div>
+        )}
       </div>
     </div>
   );

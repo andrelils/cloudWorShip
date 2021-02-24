@@ -96,12 +96,18 @@ const EditeDetail = (): React.ReactElement => {
         <div className="top-head">
           <ImagePicker
             className={
-              fileList.length === 0 ? "head-upload head-one" : "head-upload"
+              fileList.length === 0
+                ? "head-upload head-one"
+                : formData.type === "1"
+                ? "head-upload head-one"
+                : "head-upload"
             }
             files={fileList}
             onChange={onChange}
             onImageClick={(index, fs) => console.log(index, fs)}
-            selectable={fileList.length < 2}
+            selectable={
+              formData.type === "1" ? fileList.length < 1 : fileList.length < 2
+            }
           />
         </div>
       </div>

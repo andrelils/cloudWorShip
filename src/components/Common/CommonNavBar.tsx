@@ -28,13 +28,13 @@ const CommonNavBar = (props: CommonNavBarProps) => {
       <div
         style={{ display: "flex", alignItems: "center" }}
         onClick={() => {
+          console.log(1);
           history.goBack();
           onBack && onBack();
         }}
         key={Math.random()}
       >
         <Icon color="black" type="left" key={Math.random()} />
-        <span key={Math.random()}>返回</span>
       </div>,
     ],
     rightContent = [],
@@ -95,7 +95,6 @@ const CommonNavBar = (props: CommonNavBarProps) => {
           {children ? children : title}
         </NavBar>
       )}
-      <WhiteSpace style={{ height: searching ? "0.1rem" : "0.45rem" }} />
     </>
   );
 };

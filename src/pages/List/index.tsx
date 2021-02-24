@@ -9,22 +9,32 @@ const List = (): React.ReactElement => {
     {
       id: "1",
       name: "青城公墓",
-      img_src: "/imgs/u54.svg",
+      img_src: "/imgs/gm.jpg",
     },
     {
       id: "2",
       name: "青城公墓",
-      img_src: "/imgs/u54.svg",
+      img_src: "/imgs/gm.jpg",
     },
     {
       id: "3",
       name: "青城公墓",
-      img_src: "/imgs/u54.svg",
+      img_src: "/imgs/gm.jpg",
     },
     {
       id: "3",
       name: "青城公墓",
-      img_src: "/imgs/u54.svg",
+      img_src: "/imgs/gm.jpg",
+    },
+    {
+      id: "3",
+      name: "青城公墓",
+      img_src: "/imgs/gm.jpg",
+    },
+    {
+      id: "3",
+      name: "青城公墓",
+      img_src: "/imgs/gm.jpg",
     },
   ]);
   return (

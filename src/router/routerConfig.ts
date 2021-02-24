@@ -3,6 +3,7 @@ import List from "../pages/List/index";
 import ListDetail from "../pages/ListDetail/index";
 import EditeDetail from "../pages/EditeDetail/index";
 import Hall from "../pages/Hall/index";
+import SweepingOptions from "../pages/SweepingOptions/index";
 import { commonConfig } from "../shared/config/";
 
 let routes = [
@@ -35,6 +36,12 @@ let routes = [
     text: "祈福堂",
     path: commonConfig.routeBasePath + "/hall/:id",
     component: Hall,
+  },
+  {
+    name: "祈福堂",
+    text: "祈福堂",
+    path: commonConfig.routeBasePath + "/sweepingOptions",
+    component: SweepingOptions,
   },
 ];
 
