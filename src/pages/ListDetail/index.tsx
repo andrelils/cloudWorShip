@@ -8,21 +8,21 @@ const ListDetail = (): React.ReactElement => {
   const [list, setList] = useState([
     {
       id: "1",
-      name: "青城公墓",
-      begin_date: "1946-44-44",
-      end_date: "2020-11-11",
+      name: "唐纳德·特朗普",
+      begin_date: "1946年12月22日",
+      end_date: "2020年11月11月",
       node:
         "世界头号投机分子，苏联克格勃重点培养的线人，中国人民的敌人，美利坚合众国造反派领头人，国会山最美风景线的总导演",
-      img_src: "/imgs/u54.svg",
+      img_src: "/imgs/1.jpg",
     },
     {
       id: "1",
-      name: "青城公墓",
-      begin_date: "1946-44-44",
-      end_date: "2020-11-11",
+      name: "唐纳德·特朗普",
+      begin_date: "1946年12月22日",
+      end_date: "2020年11月11月",
       node:
         "世界头号投机分子，苏联克格勃重点培养的线人，中国人民的敌人，美利坚合众国造反派领头人，国会山最美风景线的总导演",
-      img_src: "/imgs/u54.svg",
+      img_src: "/imgs/1.jpg",
     },
   ]);
   return (
@@ -47,28 +47,32 @@ const ListDetail = (): React.ReactElement => {
           return (
             <div className="container-item" key={item + "_" + index}>
               <div className="item-top">
-                <div className="item-img">
+                <div className="item-pic">
                   <img src={item.img_src} alt="" />
                 </div>
                 <div className="top-detail">
                   <div className="detail-name">
                     <span>{item.name}</span>
-                    <div
-                      className="item-edit"
-                      onClick={() => {
-                        history.push(`/editeDetail?id=${item.id}`);
-                      }}
-                    >
+                    <div className="item-edit">
                       <img alt="" src="/imgs/edit.png" />
                     </div>
                   </div>
-                  <span>出生日期：{item.begin_date}</span>
-                  <span>逝世日期：{item.end_date}</span>
-                  <span>生平简介：{item.node}</span>
+                  <span className="item-date">
+                    {item.begin_date}—{item.end_date}
+                  </span>
+                  <span className="item-node">生平简介：{item.node}</span>
                 </div>
               </div>
               <div className="item-footer">
-                <div className="item-shared">分享祈福堂</div>
+                <div
+                  className="item-shared"
+                  onClick={() => {
+                    history.push(`/editeDetail?id=${item.id}`);
+                  }}
+                >
+                  编辑祈福堂
+                </div>
+                <div className="footer-line"></div>
                 <div
                   className="item-enter"
                   onClick={() => {
