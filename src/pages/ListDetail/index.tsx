@@ -1,30 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { CommonNavBar } from "../../components/index";
 import "./index.less";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
+import { getList } from "../../service/index";
+import { commonConfig } from "../../shared/config/index";
 
 const ListDetail = (): React.ReactElement => {
   const history = useHistory();
-  const [list, setList] = useState([
-    {
-      id: "1",
-      name: "唐纳德·特朗普",
-      begin_date: "1946年12月22日",
-      end_date: "2020年11月11月",
-      node:
-        "世界头号投机分子，苏联克格勃重点培养的线人，中国人民的敌人，美利坚合众国造反派领头人，国会山最美风景线的总导演",
-      img_src: "/imgs/1.jpg",
-    },
-    {
-      id: "1",
-      name: "唐纳德·特朗普",
-      begin_date: "1946年12月22日",
-      end_date: "2020年11月11月",
-      node:
-        "世界头号投机分子，苏联克格勃重点培养的线人，中国人民的敌人，美利坚合众国造反派领头人，国会山最美风景线的总导演",
-      img_src: "/imgs/1.jpg",
-    },
-  ]);
+  const { id } = useParams();
+  const [list, setList] = useState([]);
+  const [ifDouble, setIfDouble] = useState(false);
+
+  useEffect(() => {
+    getList("HQM").then((res: any) => {
+      let data = [];
+      data = res.data.items.map((item: any) => {
+        // 双人堂
+        if (item.name.split(",").length > 1) {
+          setIfDouble(true);
+          return {
+            id: item.id,
+            name1: item.name.trim().split(",")[0],
+            name2: item.name.trim().split(",")[1],
+            life1: item.life.trim().split(",")[0],
+            life2: item.life.trim().split(",")[1],
+            birthday1: item.birthday.trim().split(",")[0],
+            birthday2: item.birthday.trim().split(",")[1],
+            goneday1: item.goneday.trim().split(",")[0],
+            goneday2: item.goneday.trim().split(",")[1],
+            photo1: `${
+              commonConfig.imgBaseUrl + item.photo.trim().split(",")[0]
+            }`,
+            photo2: `${
+              commonConfig.imgBaseUrl + item.photo.trim().split(",")[1]
+            }`,
+          };
+        } else {
+          return { ...item, photo: `${commonConfig.imgBaseUrl + item.photo}` };
+        }
+      });
+      setList(data);
+    });
+  }, []);
   return (
     <div className="page-list-detail">
       <CommonNavBar title="云祭扫"></CommonNavBar>
@@ -36,7 +53,7 @@ const ListDetail = (): React.ReactElement => {
             src="/imgs/add.png"
             alt=""
             onClick={() => {
-              history.push("/editeDetail");
+              history.push(`/editeDetail?cemeteryCode=${id}`);
             }}
           ></img>
           <span>祈福堂</span>
@@ -44,46 +61,108 @@ const ListDetail = (): React.ReactElement => {
       </div>
       <div className="list-container">
         {list.map((item, index) => {
-          return (
-            <div className="container-item" key={item + "_" + index}>
-              <div className="item-top">
-                <div className="item-pic">
-                  <img src={item.img_src} alt="" />
-                </div>
-                <div className="top-detail">
-                  <div className="detail-name">
-                    <span>{item.name}</span>
-                    <div className="item-edit">
-                      <img alt="" src="/imgs/edit.png" />
-                    </div>
+          if (ifDouble) {
+            return (
+              <div className="container-item" key={item + "_" + index}>
+                <div className="item-top">
+                  <div className="item-pic">
+                    <img src={item.photo1} alt="" />
                   </div>
-                  <span className="item-date">
-                    {item.begin_date}—{item.end_date}
-                  </span>
-                  <span className="item-node">生平简介：{item.node}</span>
+                  <div className="top-detail">
+                    <div className="detail-name">
+                      <span>{item.name1}</span>
+                      <div className="item-edit">
+                        <img alt="" src="/imgs/edit.png" />
+                      </div>
+                    </div>
+                    <span className="item-date">
+                      {item.birthday1}—{item.goneday1}
+                    </span>
+                    <span className="item-node">生平简介：{item.life1}</span>
+                  </div>
+                </div>
+                <div className="item-line"></div>
+                <div className="item-top">
+                  <div className="item-pic">
+                    <img src={item.photo2} alt="" />
+                  </div>
+                  <div className="top-detail">
+                    <div className="detail-name">
+                      <span>{item.name2}</span>
+                    </div>
+                    <span className="item-date">
+                      {item.birthday2}—{item.goneday2}
+                    </span>
+                    <span className="item-node">生平简介：{item.life2}</span>
+                  </div>
+                </div>
+                <div className="item-footer">
+                  <div
+                    className="item-shared"
+                    onClick={() => {
+                      history.push(
+                        `/editeDetail?id=${item.id}&cemeteryCode=${id}`
+                      );
+                    }}
+                  >
+                    编辑祈福堂
+                  </div>
+                  <div className="footer-line"></div>
+                  <div
+                    className="item-enter"
+                    onClick={() => {
+                      history.push(`/hall/${id}`);
+                    }}
+                  >
+                    进入祈福堂
+                  </div>
                 </div>
               </div>
-              <div className="item-footer">
-                <div
-                  className="item-shared"
-                  onClick={() => {
-                    history.push(`/editeDetail?id=${item.id}`);
-                  }}
-                >
-                  编辑祈福堂
+            );
+          } else {
+            return (
+              <div className="container-item" key={item + "_" + index}>
+                <div className="item-top">
+                  <div className="item-pic">
+                    <img src={item.photo} alt="" />
+                  </div>
+                  <div className="top-detail">
+                    <div className="detail-name">
+                      <span>{item.name}</span>
+                      <div className="item-edit">
+                        <img alt="" src="/imgs/edit.png" />
+                      </div>
+                    </div>
+                    <span className="item-date">
+                      {item.birthday}—{item.goneday}
+                    </span>
+                    <span className="item-node">生平简介：{item.life}</span>
+                  </div>
                 </div>
-                <div className="footer-line"></div>
-                <div
-                  className="item-enter"
-                  onClick={() => {
-                    history.push(`/hall/${item.id}`);
-                  }}
-                >
-                  进入祈福堂
+                <div className="item-footer">
+                  <div
+                    className="item-shared"
+                    onClick={() => {
+                      history.push(
+                        `/editeDetail?id=${item.id}&cemeteryCode=${id}`
+                      );
+                    }}
+                  >
+                    编辑祈福堂
+                  </div>
+                  <div className="footer-line"></div>
+                  <div
+                    className="item-enter"
+                    onClick={() => {
+                      history.push(`/hall/${id}`);
+                    }}
+                  >
+                    进入祈福堂
+                  </div>
                 </div>
               </div>
-            </div>
-          );
+            );
+          }
         })}
         {list.length == 0 && (
           <div className="empty">

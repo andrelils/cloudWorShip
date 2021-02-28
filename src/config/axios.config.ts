@@ -9,16 +9,16 @@ function ajax(config: any) {
       url: config.url,
       params: config.params ? config.params : null,
       data: config.data ? config.data : null,
-      // headers: sessionStorage.getItem("cloud_token")
-      //   ? { Authorization: "Bearer " + sessionStorage.getItem("cloud_token") }
-      //   : null,
+      headers: sessionStorage.getItem("cloud_token")
+        ? { "LX-OPENID": sessionStorage.getItem("cloud_token") }
+        : null,
       baseURL: commonConfig.baseURL,
     })
       .then((res) => {
-        if (res.data.code === 0) {
+        if (res.data.status === 1) {
           resolve(res.data);
         } else {
-          Toast.fail(res.data.error, TOAST_DURATION);
+          Toast.fail(res.data.msg, TOAST_DURATION);
         }
       })
       .catch((err) => {

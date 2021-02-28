@@ -1,6 +1,8 @@
 const CracoLessPlugin = require("craco-less");
 const px2rem = require("postcss-px2rem-exclude");
 const isDev = process.env.NODE_ENV === "development" ? true : false; // 判断是否是开发模式还是打包模式
+var proxy = require("http-proxy-middleware");
+
 module.exports = isDev
   ? {
       style: {

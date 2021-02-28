@@ -1,10 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./index.less";
 import { CommonNavBar } from "../../components/index";
 import { useHistory } from "react-router-dom";
+import { initCode } from "../../service/index";
 
 const Home = (): React.ReactElement => {
   const history = useHistory();
+
+  useEffect(() => {
+    initCode().then((res: any) => {
+      sessionStorage.setItem("cloud_token", "o7UIL40VlE6XJqNDlwcRhb3afCOk");
+      sessionStorage.setItem("login_flag", "1");
+    });
+  }, []);
 
   return (
     <div className="page-home">

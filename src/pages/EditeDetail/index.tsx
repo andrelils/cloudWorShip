@@ -14,91 +14,164 @@ import {
 import moment from "moment";
 import "antd/lib/upload/style/css";
 import { useHistory } from "react-router-dom";
+import {
+  getList,
+  uploadImg,
+  deleteCemetery,
+  saveCemetery,
+} from "../../service/index";
+import { commonConfig } from "../../shared/config/index";
 
-function getQuery(name) {
+export const getQuery = (name) => {
   var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
   var r = window.location.search.substr(1).match(reg); //从?之后开始匹配如getQuery(courseid)返回一个数组["courseid=8","","8","&",index:0,input:"courseid=8"]
   if (r != null) return unescape(r[2]);
   return null;
-}
+};
 
 const EditeDetail = (): React.ReactElement => {
+  const cemeteryCode = getQuery("cemeteryCode");
   const [fileList, setFileList] = useState([]);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<Record<string, any>>({
     type: "1",
-    name1: "",
+    name: "",
     name2: "",
-    begin_date1: "",
-    end_date1: "",
-    begin_date2: "",
-    end_date2: "",
-    note: "",
-    bg: "",
+    birthday: "",
+    goneday: "",
+    birthday2: "",
+    goneday2: "",
+    life: "",
+    back: "",
     music: "",
   });
 
   const onChange = (files, type, index) => {
-    setFileList(files);
+    if (type === "remove") {
+      setFileList(files);
+    } else {
+      console.log(files[files.length - 1]);
+      upload(files[files.length - 1].file);
+    }
   };
   const history = useHistory();
 
-  const upload = () => {
-    // var formData = new FormData();
-    // formData.append("file", e.target.files[0]);
-    // formData.append("processInstanceId", instanceId);
-    // formData.append("fileCategory", "added");
-    // uploadFile(formData)
-    //   .then((res: any) => {
-    //     if (res.data.code === 0) {
-    //       Toast.success("上传成功", TOAST_DURATION);
-    //       initList();
-    //     } else {
-    //       Toast.success("上传失败", TOAST_DURATION);
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     let response: any = err.response;
-    //     Toast.fail(response.data.error, TOAST_DURATION);
-    //   });
+  const upload = (file) => {
+    var formData = new FormData();
+    formData.append("file", file);
+    uploadImg(formData).then((res: any) => {
+      let list = [...fileList];
+      list.push({ url: commonConfig.imgBaseUrl + res.data.data.resId });
+      setFileList(list);
+    });
+  };
+
+  const checkData = (): boolean => {
+    if (formData.type === "2") {
+      if (formData.name === "" || formData.name2 === "") {
+        Toast.fail("请填写逝者姓名", 2);
+        return false;
+      }
+      if (formData.birthday === "" || formData.birthday2 === "") {
+        Toast.fail("请填写祭拜对象出生日期", 2);
+        return false;
+      }
+      if (formData.goneday === "" || formData.goneday2 === "") {
+        Toast.fail("请填写祭拜对象逝世日期", 2);
+        return false;
+      }
+      if (formData.life === "") {
+        Toast.fail("请填写祭拜对象生平", 2);
+        return false;
+      }
+      if (formData.back === "") {
+        Toast.fail("请选择背景图片", 2);
+        return false;
+      }
+      if (formData.music === "") {
+        Toast.fail("请选择背景音乐", 2);
+        return false;
+      }
+    } else {
+      if (formData.name === "") {
+        Toast.fail("请填写逝者姓名", 2);
+        return false;
+      }
+      if (formData.birthday === "") {
+        Toast.fail("请填写祭拜对象出生日期", 2);
+        return false;
+      }
+      if (formData.goneday === "") {
+        Toast.fail("请填写祭拜对象逝世日期", 2);
+        return false;
+      }
+      if (formData.life === "") {
+        Toast.fail("请填写祭拜对象生平", 2);
+        return false;
+      }
+      if (formData.back === "") {
+        Toast.fail("请选择背景图片", 2);
+        return false;
+      }
+      if (formData.music === "") {
+        Toast.fail("请选择背景音乐", 2);
+        return false;
+      }
+    }
+    return true;
   };
 
   useEffect(() => {
     if (getQuery("id") === null) {
       setFormData({
         type: "1",
-        name1: "",
+        name: "",
         name2: "",
-        begin_date1: "",
-        end_date1: "",
-        begin_date2: "",
-        end_date2: "",
-        note: "",
-        bg: "",
+        birthday: "",
+        goneday: "",
+        birthday2: "",
+        goneday2: "",
+        life: "",
+        back: "",
         music: "",
       });
     } else {
-      setFormData({
-        type: "2",
-        name1: "特朗普",
-        name2: "特朗普",
-        begin_date1: "1111-11-15",
-        end_date1: "2222-11-22",
-        begin_date2: "1111-11-15",
-        end_date2: "2222-11-22",
-        note: "这就是模拟的简介",
-        bg: "1",
-        music: "1",
+      getList("HQM").then((res: any) => {
+        let data: any = {};
+        res.data.items.map((item: any) => {
+          if (String(item.id) === getQuery("id")) {
+            // 双人堂
+            if (item.name.split(",").length > 1) {
+              data = {
+                type: "2",
+                name: item.name.trim().split(",")[0],
+                name2: item.name.trim().split(",")[1],
+                life: item.life,
+                birthday: item.birthday.trim().split(",")[0],
+                birthday2: item.birthday.trim().split(",")[1],
+                goneday: item.goneday.trim().split(",")[0],
+                goneday2: item.goneday.trim().split(",")[1],
+                photo1: `${
+                  commonConfig.imgBaseUrl + item.photo.trim().split(",")[0]
+                }`,
+                photo2: `${
+                  commonConfig.imgBaseUrl + item.photo.trim().split(",")[1]
+                }`,
+                back: "",
+                music: "",
+              };
+              setFileList([{ url: data.photo1 }, { url: data.photo2 }]);
+            } else {
+              data = {
+                ...item,
+                type: "1",
+                photo: `${commonConfig.imgBaseUrl + item.photo}`,
+              };
+              setFileList([{ url: item.photo }]);
+            }
+          }
+        });
+        setFormData(data);
       });
-      setFileList([
-        {
-          url: "https://zos.alipayobjects.com/rmsportal/PZUUCKTRIHWiZSY.jpeg",
-          id: "2121",
-        },
-        {
-          url: "https://zos.alipayobjects.com/rmsportal/PZUUCKTRIHWiZSY.jpeg",
-          id: "2121",
-        },
-      ]);
     }
   }, []);
 
@@ -128,7 +201,7 @@ const EditeDetail = (): React.ReactElement => {
       <div className="detail-container">
         <div className="radio-group">
           <div
-            className={formData.type === "1" ? "active" : null}
+            className={formData.type === "1" ? "active" : ""}
             onClick={() => {
               setFormData({ ...formData, type: "1" });
             }}
@@ -137,7 +210,7 @@ const EditeDetail = (): React.ReactElement => {
           </div>
           <div className="line"></div>
           <div
-            className={formData.type === "2" ? "active" : null}
+            className={formData.type === "2" ? "active" : ""}
             onClick={() => {
               setFormData({ ...formData, type: "2" });
             }}
@@ -150,9 +223,9 @@ const EditeDetail = (): React.ReactElement => {
           <span>基本信息</span>
         </div>
         <InputItem
-          value={formData.name1}
+          value={formData.name}
           onChange={(e) => {
-            setFormData({ ...formData, name1: e });
+            setFormData({ ...formData, name: e });
           }}
           placeholder="请输入逝者名字"
         >
@@ -166,14 +239,12 @@ const EditeDetail = (): React.ReactElement => {
           title="Select Date"
           format="YYYY-MM-DD"
           value={
-            formData.begin_date1 === ""
-              ? undefined
-              : new Date(formData.begin_date1)
+            formData.birthday === "" ? undefined : new Date(formData.birthday)
           }
           onChange={(date) =>
             setFormData({
               ...formData,
-              begin_date1: moment(date).format("YYYY-MM-DD"),
+              birthday: moment(date).format("YYYY-MM-DD"),
             })
           }
         >
@@ -187,14 +258,12 @@ const EditeDetail = (): React.ReactElement => {
           title="Select Date"
           format="YYYY-MM-DD"
           value={
-            formData.end_date1 === ""
-              ? undefined
-              : new Date(formData.begin_date1)
+            formData.goneday === "" ? undefined : new Date(formData.goneday)
           }
           onChange={(date) =>
             setFormData({
               ...formData,
-              end_date1: moment(date).format("YYYY-MM-DD"),
+              goneday: moment(date).format("YYYY-MM-DD"),
             })
           }
         >
@@ -219,14 +288,14 @@ const EditeDetail = (): React.ReactElement => {
               title="Select Date"
               format="YYYY-MM-DD"
               value={
-                formData.begin_date2 === ""
+                formData.birthday2 === ""
                   ? undefined
-                  : new Date(formData.begin_date1)
+                  : new Date(formData.birthday2)
               }
               onChange={(date) =>
                 setFormData({
                   ...formData,
-                  begin_date2: moment(date).format("YYYY-MM-DD"),
+                  birthday2: moment(date).format("YYYY-MM-DD"),
                 })
               }
             >
@@ -240,14 +309,14 @@ const EditeDetail = (): React.ReactElement => {
               title="Select Date"
               format="YYYY-MM-DD"
               value={
-                formData.end_date2 === ""
+                formData.goneday2 === ""
                   ? undefined
-                  : new Date(formData.begin_date1)
+                  : new Date(formData.goneday2)
               }
               onChange={(date) =>
                 setFormData({
                   ...formData,
-                  end_date2: moment(date).format("YYYY-MM-DD"),
+                  goneday2: moment(date).format("YYYY-MM-DD"),
                 })
               }
             >
@@ -259,10 +328,10 @@ const EditeDetail = (): React.ReactElement => {
         <TextareaItem
           title="生平简介"
           placeholder="请输入生平简介"
-          value={formData.note}
+          value={formData.life}
           rows={2}
           onChange={(e) => {
-            setFormData({ ...formData, note: e });
+            setFormData({ ...formData, life: e });
           }}
         ></TextareaItem>
         <div className="detail-title" style={{ marginTop: "0.2rem" }}>
@@ -271,27 +340,27 @@ const EditeDetail = (): React.ReactElement => {
         </div>
         <div className="detail-bg">
           <div
-            className={formData.bg === "1" ? "bg-radio active" : "bg-radio"}
+            className={formData.back === "1" ? "bg-radio active" : "bg-radio"}
             onClick={() => {
-              setFormData({ ...formData, bg: "1" });
+              setFormData({ ...formData, back: "1" });
             }}
           >
             <img src="imgs/1.jpg" alt="" />
             <span>背景1</span>
           </div>
           <div
-            className={formData.bg === "2" ? "bg-radio active" : "bg-radio"}
+            className={formData.back === "2" ? "bg-radio active" : "bg-radio"}
             onClick={() => {
-              setFormData({ ...formData, bg: "2" });
+              setFormData({ ...formData, back: "2" });
             }}
           >
             <img src="imgs/2.jpg" alt="" />
             <span>背景2</span>
           </div>
           <div
-            className={formData.bg === "3" ? "bg-radio active" : "bg-radio"}
+            className={formData.back === "3" ? "bg-radio active" : "bg-radio"}
             onClick={() => {
-              setFormData({ ...formData, bg: "3" });
+              setFormData({ ...formData, back: "3" });
             }}
           >
             <img src="imgs/3.jpg" alt="" />
@@ -306,7 +375,7 @@ const EditeDetail = (): React.ReactElement => {
         <div className="detail-music">
           <div className="music-group">
             <div
-              className={formData.music === "1" && "active"}
+              className={formData.music === "1" ? "active" : ""}
               onClick={() => {
                 setFormData({ ...formData, music: "1" });
               }}
@@ -315,7 +384,7 @@ const EditeDetail = (): React.ReactElement => {
               祭奠
             </div>
             <div
-              className={formData.music === "2" && "active"}
+              className={formData.music === "2" ? "active" : ""}
               onClick={() => {
                 setFormData({ ...formData, music: "2" });
               }}
@@ -324,7 +393,7 @@ const EditeDetail = (): React.ReactElement => {
               念亲恩
             </div>
             <div
-              className={formData.music === "3" && "active"}
+              className={formData.music === "3" ? "active" : ""}
               onClick={() => {
                 setFormData({ ...formData, music: "3" });
               }}
@@ -333,7 +402,7 @@ const EditeDetail = (): React.ReactElement => {
               妈妈我想你
             </div>
             <div
-              className={formData.music === "4" && "active"}
+              className={formData.music === "4" ? "active" : ""}
               onClick={() => {
                 setFormData({ ...formData, music: "4" });
               }}
@@ -342,7 +411,7 @@ const EditeDetail = (): React.ReactElement => {
               爸爸
             </div>
             <div
-              className={formData.music === "5" && "active"}
+              className={formData.music === "5" ? "active" : ""}
               onClick={() => {
                 setFormData({ ...formData, music: "5" });
               }}
@@ -357,8 +426,29 @@ const EditeDetail = (): React.ReactElement => {
           <Button
             className="btn-save"
             onClick={() => {
-              Toast.success("保存成功");
-              history.goBack();
+              if (checkData()) {
+                let newData: any = {
+                  gravetype: getQuery("cemeteryCode"),
+                  type: formData.type,
+                  name: [formData.name, formData.name2].join(",").trim(),
+                  birthday: [formData.birthday, formData.birthday2]
+                    .join(",")
+                    .trim(),
+                  goneday: [formData.goneday, formData.goneday2]
+                    .join(",")
+                    .trim(),
+                  life: formData.life,
+                  back: formData.back,
+                  music: formData.music,
+                };
+                if (getQuery("id") !== null) {
+                  newData.id = getQuery("id");
+                }
+                saveCemetery(newData).then(() => {
+                  Toast.success("保存成功");
+                  history.goBack();
+                });
+              }
             }}
           >
             保存
@@ -371,8 +461,10 @@ const EditeDetail = (): React.ReactElement => {
                 {
                   text: "Ok",
                   onPress: () => {
-                    Toast.success("删除成功");
-                    history.goBack();
+                    deleteCemetery(getQuery("id")).then((res: any) => {
+                      Toast.success("删除成功");
+                      history.goBack();
+                    });
                   },
                 },
               ]);

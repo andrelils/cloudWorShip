@@ -1,42 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { CommonNavBar } from "../../components/index";
 import "./index.less";
 import { useHistory } from "react-router-dom";
+import { getCemeteryList } from "../../service/index";
 
 const List = (): React.ReactElement => {
   const history = useHistory();
-  const [list, setList] = useState([
-    {
-      id: "1",
-      name: "青城公墓",
-      img_src: "/imgs/gm.jpg",
-    },
-    {
-      id: "2",
-      name: "青城公墓",
-      img_src: "/imgs/gm.jpg",
-    },
-    {
-      id: "3",
-      name: "青城公墓",
-      img_src: "/imgs/gm.jpg",
-    },
-    {
-      id: "3",
-      name: "青城公墓",
-      img_src: "/imgs/gm.jpg",
-    },
-    {
-      id: "3",
-      name: "青城公墓",
-      img_src: "/imgs/gm.jpg",
-    },
-    {
-      id: "3",
-      name: "青城公墓",
-      img_src: "/imgs/gm.jpg",
-    },
-  ]);
+  const [list, setList] = useState([]);
+
+  useEffect(() => {
+    getCemeteryList().then((res: any) => {
+      setList(res.data.data);
+    });
+  }, []);
   return (
     <div className="page-list">
       <CommonNavBar title="云祭扫"></CommonNavBar>
@@ -50,13 +26,13 @@ const List = (): React.ReactElement => {
               className="container-item"
               key={item + "_" + index}
               onClick={() => {
-                history.push(`/listDetail/${item.id}`);
+                history.push(`/listDetail/${item.cemeteryCode}`);
               }}
             >
               <div className="item-img">
-                <img src={item.img_src} alt="" />
+                <img src={item.cemeteryPic} alt="" />
               </div>
-              <div className="item-text">{item.name}</div>
+              <div className="item-text">{item.cemeteryName}</div>
             </div>
           );
         })}

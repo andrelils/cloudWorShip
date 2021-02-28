@@ -2,71 +2,180 @@ import React, { useState, useEffect, useRef } from "react";
 import { CommonNavBar } from "../../components/index";
 import "./index.less";
 import { Modal, Stepper, Toast } from "antd-mobile";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
+import { getCemeteryDetail, getSayList, sendSay } from "../../service/index";
+import { commonConfig } from "../../shared/config/index";
 
 const Hall = () => {
   const [ifPlay, setIfPlay] = useState(false);
+  const { id } = useParams();
   const [modalFormData, setModalFormData] = useState({
     visible: false,
     type: "",
+    lwType: 0,
     send_num: 1,
   });
-  const [formData, setFormData] = useState({
-    bg: "/imgs/hall-bg.png",
-    tx1: "/imgs/tx1.png",
-    tx2: "/imgs/tx2.png",
-    music:
-      "https://demo.dj63.com//2016/串烧舞曲/20161108/[男人声线]全国语音乐热播情歌歌曲连版串烧.mp3",
-    note:
-      "世界头号投机分子，苏联克格重点勃培养的线人，中国人民的敌人，美利坚合众国造反派领头人，国会山最美风景线的总导演。世界头号投机分子，苏联克格勃重点培养的线人，中国人民的敌人，美利坚合众国造反派领头人，国会山最美风景线的总导演。",
+  const [sayList, setSayList] = useState<any[]>([]);
+  const [formData, setFormData] = useState<any>({
+    type: "1",
+    name: "",
+    name2: "",
+    birthday: "",
+    goneday: "",
+    birthday2: "",
+    goneday2: "",
+    life: "",
+    back: "",
+    music: "",
   });
   const ref: any = useRef();
+
+  const getDMList = () => {
+    getSayList(id).then((res: any) => {
+      setSayList(res.data.items);
+    });
+  };
+
+  useEffect(() => {
+    getCemeteryDetail(id).then((res: any) => {
+      let data = {};
+      if (res.data.item.type === "2") {
+        data = {
+          type: "2",
+          name: res.data.item.name.trim().split(",")[0],
+          name2: res.data.item.name.trim().split(",")[1],
+          life: res.data.item.life,
+          birthday: res.data.item.birthday.trim().split(",")[0],
+          birthday2: res.data.item.birthday.trim().split(",")[1],
+          goneday: res.data.item.goneday.trim().split(",")[0],
+          goneday2: res.data.item.goneday.trim().split(",")[1],
+          photo1: `${
+            commonConfig.imgBaseUrl + res.data.item.photo.trim().split(",")[0]
+          }`,
+          photo2: `${
+            commonConfig.imgBaseUrl + res.data.item.photo.trim().split(",")[1]
+          }`,
+          back: "/imgs/hall-bg.png",
+          music:
+            "https://demo.dj63.com//2016/串烧舞曲/20161108/[男人声线]全国语音乐热播情歌歌曲连版串烧.mp3",
+        };
+      } else {
+        data = {
+          ...res.data.item,
+          back: "/imgs/hall-bg.png",
+          music:
+            "https://demo.dj63.com//2016/串烧舞曲/20161108/[男人声线]全国语音乐热播情歌歌曲连版串烧.mp3",
+          photo: `${commonConfig.imgBaseUrl + res.data.item.photo}`,
+        };
+      }
+      setFormData(data);
+    });
+    getDMList();
+  }, []);
 
   return (
     <div className="page-hall ">
       <CommonNavBar title="祈福堂"></CommonNavBar>
       <div className="hall-container">
         <div className="dm">
-          <div className="dm-item">
-            <div className="hall-note">
-              <div className="lw-title">
-                <span>随风飘散</span>
-                <span className="lw-name">香烛</span>
-              </div>
-              <div className="lw-num">
-                <img src="/imgs/lw-lazhu.png" alt="" />
-                <span className="num">x 2</span>
-              </div>
-            </div>
-          </div>
-          <div className="dm-item">
-            <div className="hall-note">
-              <span className="note-title">随风飘散：</span>
-              走好，逝者安息~~
-            </div>
-          </div>
-          <div className="dm-item">
-            <div className="hall-note">
-              <span className="note-title">随风飘散：</span>
-              不要牵挂我们，逝者安息，阿门~
-            </div>
-          </div>
+          {sayList.map((item: any) => {
+            // 留言
+            if (item.type === 0) {
+              return (
+                <div className="dm-item" key={item.id}>
+                  <div className="hall-note">
+                    <span className="note-title">{item.name}：</span>
+                    <span style={{ flex: 1 }}>{item.content}</span>
+                  </div>
+                </div>
+              );
+              //花圈
+            } else if (item.type === 1) {
+              return (
+                <div className="dm-item" key={item.id}>
+                  <div className="hall-note">
+                    <div className="lw-title">
+                      <span>{item.name}</span>
+                      <span className="lw-name">花圈</span>
+                    </div>
+                    <div className="lw-num">
+                      <img src="/imgs/lw-hua.png" alt="" />
+                      <span className="num">x 2</span>
+                    </div>
+                  </div>
+                </div>
+              );
+              //蜡烛
+            } else if (item.type === 2) {
+              return (
+                <div className="dm-item" key={item.id}>
+                  <div className="hall-note">
+                    <div className="lw-title">
+                      <span>{item.name}</span>
+                      <span className="lw-name">蜡烛</span>
+                    </div>
+                    <div className="lw-num">
+                      <img src="/imgs/lw-lazhu.png" alt="" />
+                      <span className="num">x 2</span>
+                    </div>
+                  </div>
+                </div>
+              );
+              //上香
+            } else if (item.type === 3) {
+              return (
+                <div className="dm-item" key={item.id}>
+                  <div className="hall-note">
+                    <div className="lw-title">
+                      <span>{item.name}</span>
+                      <span className="lw-name">上香</span>
+                    </div>
+                    <div className="lw-num">
+                      <img src="/imgs/lw-xl.png" alt="" />
+                      <span className="num">x 2</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            } else {
+              return null;
+            }
+          })}
         </div>
         <div className="hall-bg">
-          <img src={formData.bg} alt="" />
+          <img src={formData.back} alt="" />
           <div className="tx-group">
-            <img src={formData.tx1} alt="" />
-            <img src={formData.tx2} alt="" />
+            <div className="tx-img">
+              <img className="tx-bg" src="/imgs/xiangkuang.png" alt="" />
+              <img className="tx-pic" src={formData.photo1} alt="" />
+              <div className="tx-name">{formData.name}</div>
+            </div>
+            <div className="tx-img">
+              <img className="tx-bg" src="/imgs/xiangkuang.png" alt="" />
+              <img className="tx-pic" src={formData.photo2} alt="" />
+              <div className="tx-name">{formData.name2}</div>
+            </div>
           </div>
         </div>
         <div className="hall-footer">
           <div className="hall-note">
             <span className="note-title">生平简介：</span>
-            {formData.note}
+            {formData.life}
           </div>
           <div className="operate-group">
             <div className="input-dm">
-              <input placeholder="发送祝福" />
+              <input
+                placeholder="发送祝福"
+                onKeyDown={(e: any) => {
+                  if (e.key === "Enter") {
+                    sendSay(id, 0, "张三", e.target.value).then(() => {
+                      e.target.value = "";
+                      Toast.success("发送成功", 1);
+                      getDMList();
+                    });
+                  }
+                }}
+              />
             </div>
             <div
               className="img-body"
@@ -74,6 +183,7 @@ const Hall = () => {
                 setModalFormData({
                   ...modalFormData,
                   visible: true,
+                  lwType: 1,
                   type: "/imgs/hua.png",
                 });
               }}
@@ -86,6 +196,7 @@ const Hall = () => {
                 setModalFormData({
                   ...modalFormData,
                   visible: true,
+                  lwType: 2,
                   type: "/imgs/lazhu.png",
                 });
               }}
@@ -98,6 +209,7 @@ const Hall = () => {
                 setModalFormData({
                   ...modalFormData,
                   visible: true,
+                  lwType: 3,
                   type: "/imgs/xl.png",
                 });
               }}
@@ -139,11 +251,14 @@ const Hall = () => {
               <div
                 className="send"
                 onClick={() => {
-                  Toast.success("发送成功", 1);
-                  setModalFormData({
-                    ...modalFormData,
-                    visible: false,
-                    send_num: 1,
+                  sendSay(id, modalFormData.lwType, "张三", "").then(() => {
+                    Toast.success("发送成功", 1);
+                    getDMList();
+                    setModalFormData({
+                      ...modalFormData,
+                      visible: false,
+                      send_num: 1,
+                    });
                   });
                 }}
               >

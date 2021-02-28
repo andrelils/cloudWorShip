@@ -3,7 +3,9 @@ let defaultConfig = {
   //登录请求的基础地址
   loginURL: "",
   // 其他请求的基础地址
-  baseURL: "http://192.168.110.85/next",
+  baseURL: "",
+  // 图片地址
+  imgBaseUrl: "http://222.191.22.229:6080/wx/public/resource/image/",
   //所有路由前缀
   routeBasePath: "",
   // SZ -- 上证  common--普通用户名密码登录
