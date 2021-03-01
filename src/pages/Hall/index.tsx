@@ -3,7 +3,7 @@ import { CommonNavBar } from "../../components/index";
 import "./index.less";
 import { Modal, Stepper, Toast } from "antd-mobile";
 import { useHistory, useParams } from "react-router-dom";
-import { getCemeteryDetail, getSayList, sendSay } from "../../service/index";
+import { getCemeteryDetail, getSayList, sendSay, getPicOrMusic } from "../../service/index";
 import { commonConfig } from "../../shared/config/index";
 
 const Hall = () => {
@@ -16,6 +16,7 @@ const Hall = () => {
     send_num: 1,
   });
   const [sayList, setSayList] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState<any>({
     type: "1",
     name: "",
@@ -28,7 +29,6 @@ const Hall = () => {
     back: "",
     music: "",
   });
-  const ref: any = useRef();
 
   const getDMList = () => {
     getSayList(id).then((res: any) => {
@@ -38,37 +38,43 @@ const Hall = () => {
 
   useEffect(() => {
     getCemeteryDetail(id).then((res: any) => {
-      let data = {};
+      let data: any = {};
       if (res.data.item.type === "2") {
-        data = {
-          type: "2",
-          name: res.data.item.name.trim().split(",")[0],
-          name2: res.data.item.name.trim().split(",")[1],
-          life: res.data.item.life,
-          birthday: res.data.item.birthday.trim().split(",")[0],
-          birthday2: res.data.item.birthday.trim().split(",")[1],
-          goneday: res.data.item.goneday.trim().split(",")[0],
-          goneday2: res.data.item.goneday.trim().split(",")[1],
-          photo1: `${
-            commonConfig.imgBaseUrl + res.data.item.photo.trim().split(",")[0]
-          }`,
-          photo2: `${
-            commonConfig.imgBaseUrl + res.data.item.photo.trim().split(",")[1]
-          }`,
-          back: "/imgs/hall-bg.png",
-          music:
-            "https://demo.dj63.com//2016/串烧舞曲/20161108/[男人声线]全国语音乐热播情歌歌曲连版串烧.mp3",
-        };
+        Promise.all([
+          getPicOrMusic(res.data.item.back), getPicOrMusic(res.data.item.music)
+        ]).then((val: any[]) => {
+          data = {
+            type: "2",
+            name: res.data.item.name.trim().split(",")[0],
+            name2: res.data.item.name.trim().split(",")[1],
+            life: res.data.item.life,
+            birthday: res.data.item.birthday.trim().split(",")[0],
+            birthday2: res.data.item.birthday.trim().split(",")[1],
+            goneday: res.data.item.goneday.trim().split(",")[0],
+            goneday2: res.data.item.goneday.trim().split(",")[1],
+            photo: `${commonConfig.imgBaseUrl + res.data.item.photo.trim().split(",")[0]
+              }`,
+            photo2: `${commonConfig.imgBaseUrl + res.data.item.photo.trim().split(",")[1]
+              }`,
+            back: commonConfig.imgBaseUrl + val[0].data.resId,
+            music: commonConfig.musicBaseUrl + val[1].data.resId,
+          };
+          setFormData(data);
+          setLoading(true)
+        })
       } else {
-        data = {
-          ...res.data.item,
-          back: "/imgs/hall-bg.png",
-          music:
-            "https://demo.dj63.com//2016/串烧舞曲/20161108/[男人声线]全国语音乐热播情歌歌曲连版串烧.mp3",
-          photo: `${commonConfig.imgBaseUrl + res.data.item.photo}`,
-        };
+        Promise.all([
+          getPicOrMusic(res.data.item.back), getPicOrMusic(res.data.item.music)
+        ]).then((val: any[]) => {
+          data = {
+            ...res.data.item,
+            back: commonConfig.imgBaseUrl + val[0].data.resId,
+            music: commonConfig.musicBaseUrl + val[1].data.resId,
+            photo: commonConfig.imgBaseUrl + res.data.item.photo,
+          }
+          setFormData(data);
+        })
       }
-      setFormData(data);
     });
     getDMList();
   }, []);
@@ -147,14 +153,17 @@ const Hall = () => {
           <div className="tx-group">
             <div className="tx-img">
               <img className="tx-bg" src="/imgs/xiangkuang.png" alt="" />
-              <img className="tx-pic" src={formData.photo1} alt="" />
+              <img className="tx-pic" src={formData.photo} alt="" />
               <div className="tx-name">{formData.name}</div>
             </div>
-            <div className="tx-img">
-              <img className="tx-bg" src="/imgs/xiangkuang.png" alt="" />
-              <img className="tx-pic" src={formData.photo2} alt="" />
-              <div className="tx-name">{formData.name2}</div>
-            </div>
+            {
+              formData.type === "2" && <div className="tx-img">
+                <img className="tx-bg" src="/imgs/xiangkuang.png" alt="" />
+                <img className="tx-pic" src={formData.photo2} alt="" />
+                <div className="tx-name">{formData.name2}</div>
+              </div>
+            }
+
           </div>
         </div>
         <div className="hall-footer">

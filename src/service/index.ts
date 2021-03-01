@@ -82,3 +82,26 @@ export const sendSay = (id, type, name, content) => {
     },
   });
 };
+
+// 获取背景图片列表
+export const getImgsList = () => {
+  return ajax({
+    url: '/wx/public/back/images',
+    method: "get"
+  })
+}
+// 获取背景音乐列表
+export const getMusicsList = () => {
+  return ajax({
+    url: '/wx/public/back/musics',
+    method: "get"
+  })
+}
+
+//获取背景图片资源或背景音乐资源ID
+export const getPicOrMusic = (id) => {
+  return ajax({
+    url: `/wx/public/back/res/${id}`,
+    method: "get"
+  })
+}

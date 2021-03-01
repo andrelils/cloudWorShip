@@ -12,14 +12,4 @@ module.exports = function (app) {
     })
   );
 
-  app.use(
-    createProxyMiddleware("/testapi.internetofcity.cn/", {
-      target: "https://testapi.internetofcity.cn/",
-      secure: false,
-      changeOrigin: true,
-      pathRewrite: {
-        "^/testapi.internetofcity.cn/": "https://testapi.internetofcity.cn/",
-      },
-    })
-  );
 };

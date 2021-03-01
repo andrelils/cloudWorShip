@@ -41,10 +41,11 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
   </body>
-  <!-- // <script src="%PUBLIC_URL%/fastclick.js"></script> -->
+  <script src="%PUBLIC_URL%/lxsdk-1.0.5.min.js"></script>
+  <script src="%PUBLIC_URL%/fastclick.js"></script>
   <script src="%PUBLIC_URL%/es6-promise.min.js"></script>
-  <script src="./lxsdk-1.0.5.min.js"></script>
   <script>
+    window.ls = ls;
     //  处理移动端点击事件和Promise兼容问题
     if ("addEventListener" in document) {
       document.addEventListener(

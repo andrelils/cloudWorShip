@@ -15,10 +15,12 @@ import moment from "moment";
 import "antd/lib/upload/style/css";
 import { useHistory } from "react-router-dom";
 import {
-  getList,
+  getCemeteryDetail,
   uploadImg,
   deleteCemetery,
   saveCemetery,
+  getImgsList,
+  getMusicsList
 } from "../../service/index";
 import { commonConfig } from "../../shared/config/index";
 
@@ -32,6 +34,8 @@ export const getQuery = (name) => {
 const EditeDetail = (): React.ReactElement => {
   const cemeteryCode = getQuery("cemeteryCode");
   const [fileList, setFileList] = useState([]);
+  const [imgsList, setImgsList] = useState([])
+  const [musicList, setMusicList] = useState([])
   const [formData, setFormData] = useState<Record<string, any>>({
     type: "1",
     name: "",
@@ -49,7 +53,6 @@ const EditeDetail = (): React.ReactElement => {
     if (type === "remove") {
       setFileList(files);
     } else {
-      console.log(files[files.length - 1]);
       upload(files[files.length - 1].file);
     }
   };
@@ -60,10 +63,19 @@ const EditeDetail = (): React.ReactElement => {
     formData.append("file", file);
     uploadImg(formData).then((res: any) => {
       let list = [...fileList];
-      list.push({ url: commonConfig.imgBaseUrl + res.data.data.resId });
+      list.push({ url: commonConfig.imgBaseUrl + res.data.data.resId, id: res.data.data.resId });
       setFileList(list);
     });
   };
+
+  const getImgMusicList = () => {
+    getImgsList().then((res: any) => {
+      setImgsList(res.data.items)
+    })
+    getMusicsList().then((res: any) => {
+      setMusicList(res.data.items)
+    })
+  }
 
   const checkData = (): boolean => {
     if (formData.type === "2") {
@@ -116,11 +128,18 @@ const EditeDetail = (): React.ReactElement => {
         Toast.fail("请选择背景音乐", 2);
         return false;
       }
+      if ((formData.type === "1" && fileList.length < 1) || (formData.type === "2" && fileList.length < 2)) {
+        Toast.fail("请上传头像", 2);
+        return false;
+      }
     }
     return true;
   };
 
+
+
   useEffect(() => {
+    getImgMusicList()
     if (getQuery("id") === null) {
       setFormData({
         type: "1",
@@ -135,41 +154,36 @@ const EditeDetail = (): React.ReactElement => {
         music: "",
       });
     } else {
-      getList("HQM").then((res: any) => {
+      getCemeteryDetail(getQuery("id")).then((res: any) => {
         let data: any = {};
-        res.data.items.map((item: any) => {
-          if (String(item.id) === getQuery("id")) {
-            // 双人堂
-            if (item.name.split(",").length > 1) {
-              data = {
-                type: "2",
-                name: item.name.trim().split(",")[0],
-                name2: item.name.trim().split(",")[1],
-                life: item.life,
-                birthday: item.birthday.trim().split(",")[0],
-                birthday2: item.birthday.trim().split(",")[1],
-                goneday: item.goneday.trim().split(",")[0],
-                goneday2: item.goneday.trim().split(",")[1],
-                photo1: `${
-                  commonConfig.imgBaseUrl + item.photo.trim().split(",")[0]
-                }`,
-                photo2: `${
-                  commonConfig.imgBaseUrl + item.photo.trim().split(",")[1]
-                }`,
-                back: "",
-                music: "",
-              };
-              setFileList([{ url: data.photo1 }, { url: data.photo2 }]);
-            } else {
-              data = {
-                ...item,
-                type: "1",
-                photo: `${commonConfig.imgBaseUrl + item.photo}`,
-              };
-              setFileList([{ url: item.photo }]);
-            }
-          }
-        });
+        let item = res.data.item
+        // 双人堂
+        if (item.name.split(",").length > 1) {
+          data = {
+            type: "2",
+            name: item.name.trim().split(",")[0],
+            name2: item.name.trim().split(",")[1],
+            life: item.life,
+            birthday: item.birthday.trim().split(",")[0],
+            birthday2: item.birthday.trim().split(",")[1],
+            goneday: item.goneday.trim().split(",")[0],
+            goneday2: item.goneday.trim().split(",")[1],
+            photo1: `${commonConfig.imgBaseUrl + item.photo.trim().split(",")[0]
+              }`,
+            photo2: `${commonConfig.imgBaseUrl + item.photo.trim().split(",")[1]
+              }`,
+            back: item.back,
+            music: item.music,
+          };
+          setFileList([{ url: data.photo1, id: item.photo.trim().split(",")[0] }, { url: data.photo2, id: item.photo.trim().split(",")[1] }]);
+        } else {
+          data = {
+            ...item,
+            type: "1",
+            photo: `${commonConfig.imgBaseUrl + item.photo}`,
+          };
+          setFileList([{ url: data.photo, id: item.photo }]);
+        }
         setFormData(data);
       });
     }
@@ -186,8 +200,8 @@ const EditeDetail = (): React.ReactElement => {
               fileList.length === 0
                 ? "head-upload head-one"
                 : formData.type === "1"
-                ? "head-upload head-one"
-                : "head-upload"
+                  ? "head-upload head-one"
+                  : "head-upload"
             }
             files={fileList}
             onChange={onChange}
@@ -288,7 +302,7 @@ const EditeDetail = (): React.ReactElement => {
               title="Select Date"
               format="YYYY-MM-DD"
               value={
-                formData.birthday2 === ""
+                formData.birthday2 === "" || formData.birthday2 === undefined
                   ? undefined
                   : new Date(formData.birthday2)
               }
@@ -309,7 +323,7 @@ const EditeDetail = (): React.ReactElement => {
               title="Select Date"
               format="YYYY-MM-DD"
               value={
-                formData.goneday2 === ""
+                formData.goneday2 === "" || formData.goneday2 === undefined
                   ? undefined
                   : new Date(formData.goneday2)
               }
@@ -339,33 +353,21 @@ const EditeDetail = (): React.ReactElement => {
           <span>祈福堂背景</span>
         </div>
         <div className="detail-bg">
-          <div
-            className={formData.back === "1" ? "bg-radio active" : "bg-radio"}
-            onClick={() => {
-              setFormData({ ...formData, back: "1" });
-            }}
-          >
-            <img src="imgs/1.jpg" alt="" />
-            <span>背景1</span>
-          </div>
-          <div
-            className={formData.back === "2" ? "bg-radio active" : "bg-radio"}
-            onClick={() => {
-              setFormData({ ...formData, back: "2" });
-            }}
-          >
-            <img src="imgs/2.jpg" alt="" />
-            <span>背景2</span>
-          </div>
-          <div
-            className={formData.back === "3" ? "bg-radio active" : "bg-radio"}
-            onClick={() => {
-              setFormData({ ...formData, back: "3" });
-            }}
-          >
-            <img src="imgs/3.jpg" alt="" />
-            <span>背景3</span>
-          </div>
+          {
+            imgsList.map((item) => {
+              return (
+                <div
+                  className={formData.back === item.id ? "bg-radio active" : "bg-radio"}
+                  onClick={() => {
+                    setFormData({ ...formData, back: item.id });
+                  }}
+                >
+                  <img src={commonConfig.imgBaseUrl + item.resId} alt="" />
+                  <span>{item.type}</span>
+                </div>
+              )
+            })
+          }
         </div>
 
         <div className="detail-title" style={{ marginTop: "0.2rem" }}>
@@ -374,51 +376,19 @@ const EditeDetail = (): React.ReactElement => {
         </div>
         <div className="detail-music">
           <div className="music-group">
-            <div
-              className={formData.music === "1" ? "active" : ""}
-              onClick={() => {
-                setFormData({ ...formData, music: "1" });
-              }}
-            >
-              <img src="/imgs/music-logo.png" alt="" />
-              祭奠
-            </div>
-            <div
-              className={formData.music === "2" ? "active" : ""}
-              onClick={() => {
-                setFormData({ ...formData, music: "2" });
-              }}
-            >
-              <img src="/imgs/music-logo.png" alt="" />
-              念亲恩
-            </div>
-            <div
-              className={formData.music === "3" ? "active" : ""}
-              onClick={() => {
-                setFormData({ ...formData, music: "3" });
-              }}
-            >
-              <img src="/imgs/music-logo.png" alt="" />
-              妈妈我想你
-            </div>
-            <div
-              className={formData.music === "4" ? "active" : ""}
-              onClick={() => {
-                setFormData({ ...formData, music: "4" });
-              }}
-            >
-              <img src="/imgs/music-logo.png" alt="" />
-              爸爸
-            </div>
-            <div
-              className={formData.music === "5" ? "active" : ""}
-              onClick={() => {
-                setFormData({ ...formData, music: "5" });
-              }}
-            >
-              <img src="/imgs/music-logo.png" alt="" />
-              真的好想你
-            </div>
+            {
+              musicList.map((item) => {
+                return <div
+                  className={formData.music === item.id ? "active" : ""}
+                  onClick={() => {
+                    setFormData({ ...formData, music: item.id });
+                  }}
+                >
+                  <img src="/imgs/music-logo.png" alt="" />
+                  {item.type}
+                </div>
+              })
+            }
           </div>
         </div>
 
@@ -430,16 +400,17 @@ const EditeDetail = (): React.ReactElement => {
                 let newData: any = {
                   gravetype: getQuery("cemeteryCode"),
                   type: formData.type,
-                  name: [formData.name, formData.name2].join(",").trim(),
-                  birthday: [formData.birthday, formData.birthday2]
+                  name: formData.type === "1" ? formData.name : [formData.name, formData.name2].join(",").trim(),
+                  birthday: formData.type === "1" ? formData.birthday : [formData.birthday, formData.birthday2]
                     .join(",")
                     .trim(),
-                  goneday: [formData.goneday, formData.goneday2]
+                  goneday: formData.type === "1" ? formData.goneday : [formData.goneday, formData.goneday2]
                     .join(",")
                     .trim(),
                   life: formData.life,
                   back: formData.back,
                   music: formData.music,
+                  photo: formData.type === "1" ? fileList[0].id : [fileList[0].id, fileList[1].id].join(",").trim()
                 };
                 if (getQuery("id") !== null) {
                   newData.id = getQuery("id");

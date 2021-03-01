@@ -4,6 +4,7 @@ import "./index.less";
 import { useHistory, useParams } from "react-router-dom";
 import { getList } from "../../service/index";
 import { commonConfig } from "../../shared/config/index";
+import { Toast } from "antd-mobile";
 
 const ListDetail = (): React.ReactElement => {
   const history = useHistory();
@@ -11,8 +12,26 @@ const ListDetail = (): React.ReactElement => {
   const [list, setList] = useState([]);
   const [ifDouble, setIfDouble] = useState(false);
 
+  const share = () => {
+    setTimeout(() => {
+      commonConfig.ls.share(
+        {
+          type: "1",
+          data: [],
+          platformType: '1'
+        },
+        function (res) {
+          if (res.code === 200) {
+            Toast.success('分享成功', 2)
+            console.log(res.data.platform);
+          }
+        }
+      );
+    })
+  }
+
   useEffect(() => {
-    getList("HQM").then((res: any) => {
+    getList(id).then((res: any) => {
       let data = [];
       data = res.data.items.map((item: any) => {
         // 双人堂
@@ -28,14 +47,13 @@ const ListDetail = (): React.ReactElement => {
             birthday2: item.birthday.trim().split(",")[1],
             goneday1: item.goneday.trim().split(",")[0],
             goneday2: item.goneday.trim().split(",")[1],
-            photo1: `${
-              commonConfig.imgBaseUrl + item.photo.trim().split(",")[0]
-            }`,
-            photo2: `${
-              commonConfig.imgBaseUrl + item.photo.trim().split(",")[1]
-            }`,
+            photo1: `${commonConfig.imgBaseUrl + item.photo.trim().split(",")[0]
+              }`,
+            photo2: `${commonConfig.imgBaseUrl + item.photo.trim().split(",")[1]
+              }`,
           };
         } else {
+          setIfDouble(false)
           return { ...item, photo: `${commonConfig.imgBaseUrl + item.photo}` };
         }
       });
@@ -129,7 +147,7 @@ const ListDetail = (): React.ReactElement => {
                   <div className="top-detail">
                     <div className="detail-name">
                       <span>{item.name}</span>
-                      <div className="item-edit">
+                      <div className="item-edit" onClick={() => share()}>
                         <img alt="" src="/imgs/edit.png" />
                       </div>
                     </div>
@@ -154,7 +172,7 @@ const ListDetail = (): React.ReactElement => {
                   <div
                     className="item-enter"
                     onClick={() => {
-                      history.push(`/hall/${id}`);
+                      history.push(`/hall/${item.id}`);
                     }}
                   >
                     进入祈福堂

@@ -6,14 +6,16 @@ let defaultConfig = {
   baseURL: "",
   // 图片地址
   imgBaseUrl: "http://222.191.22.229:6080/wx/public/resource/image/",
+  //音乐地址
+  musicBaseUrl:"http://222.191.22.229:6080/wx/public/resource/music/",
   //所有路由前缀
   routeBasePath: "",
   // SZ -- 上证  common--普通用户名密码登录
   loginType: "common",
   // 登录页面返回主页的链接(上证)
   backHomeURL: "",
+  appId:'B400556199781376X'
 };
-
 if (window.YWConfig) {
   for (var key in defaultConfig) {
     if (window.YWConfig[key]) {
@@ -21,5 +23,9 @@ if (window.YWConfig) {
     }
   }
 }
+setTimeout(()=>{
+  defaultConfig.ls = window.ls
+},100)
+
 // 获取存储配置
 export const commonConfig = defaultConfig;
