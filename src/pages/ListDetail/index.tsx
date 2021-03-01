@@ -13,21 +13,19 @@ const ListDetail = (): React.ReactElement => {
   const [ifDouble, setIfDouble] = useState(false);
 
   const share = () => {
-    setTimeout(() => {
-      commonConfig.ls.share(
-        {
-          type: "1",
-          data: [],
-          platformType: '1'
-        },
-        function (res) {
-          if (res.code === 200) {
-            Toast.success('分享成功', 2)
-            console.log(res.data.platform);
-          }
+    commonConfig.ls.share(
+      {
+        type: "1",
+        data: [],
+        platformType: '1'
+      },
+      function (res) {
+        if (res.code === 200) {
+          Toast.success('分享成功', 2)
+          console.log(res.data.platform);
         }
-      );
-    })
+      }
+    );
   }
 
   useEffect(() => {

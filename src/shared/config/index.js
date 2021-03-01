@@ -23,9 +23,6 @@ if (window.YWConfig) {
     }
   }
 }
-setTimeout(()=>{
-  defaultConfig.ls = window.ls
-},100)
-
+defaultConfig.ls = window.ls
 // 获取存储配置
 export const commonConfig = defaultConfig;

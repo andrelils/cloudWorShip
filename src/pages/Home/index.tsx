@@ -9,34 +9,32 @@ const Home = () => {
   const history = useHistory();
 
   useEffect(() => {
-    setTimeout(() => {
-      let ls = commonConfig.ls
-      initCode().then((res: any) => {
-        ls.config({
-          debug: true, //开发时建议把调试模式开启
-          appId: commonConfig.appId,
-          initCode: res.data.initCode
-        })
-        //成功回调
-        ls.ready(function () {
-          //⾃定义逻辑，如：
-          //1.调⽤ JSSDK ⾥提供的交互⽅法
-          //2.如需获取⽤户信息，需要在此处调⽤ ls.userAuth(Objectobject)⽅法和后续操作。
-          ls.userAuth({ appId: commonConfig.appId }, function (res) {
-            if (res.code === 200) {
-              sessionStorage.setItem("cloud_token", res.data.requestCode);
-              // sessionStorage.setItem("cloud_token", "o7UIL40VlE6XJqNDlwcRhb3afCOk");
-              sessionStorage.setItem("login_flag", "1");
-            }
-          });
+    let ls = commonConfig.ls
+    initCode().then((res: any) => {
+      ls.config({
+        debug: true, //开发时建议把调试模式开启
+        appId: commonConfig.appId,
+        initCode: res.data.initCode
+      })
+      //成功回调
+      ls.ready(function () {
+        //⾃定义逻辑，如：
+        //1.调⽤ JSSDK ⾥提供的交互⽅法
+        //2.如需获取⽤户信息，需要在此处调⽤ ls.userAuth(Objectobject)⽅法和后续操作。
+        ls.userAuth({ appId: commonConfig.appId }, function (res) {
+          if (res.code === 200) {
+            sessionStorage.setItem("cloud_token", res.data.requestCode);
+            // sessionStorage.setItem("cloud_token", "o7UIL40VlE6XJqNDlwcRhb3afCOk");
+            sessionStorage.setItem("login_flag", "1");
+          }
+        });
 
-        });
-        //失败回调
-        ls.error(function (res) {
-          //错误处理
-        });
       });
-    })
+      //失败回调
+      ls.error(function (res) {
+        //错误处理
+      });
+    });
 
   }, []);
 
