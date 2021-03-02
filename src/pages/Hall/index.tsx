@@ -5,6 +5,7 @@ import { Modal, Stepper, Toast } from "antd-mobile";
 import { useHistory, useParams } from "react-router-dom";
 import { getCemeteryDetail, getSayList, sendSay, getPicOrMusic } from "../../service/index";
 import { commonConfig } from "../../shared/config/index";
+let ifLoop = true
 
 const Hall = () => {
   const [ifPlay, setIfPlay] = useState(false);
@@ -16,7 +17,6 @@ const Hall = () => {
     send_num: 1,
   });
   const [sayList, setSayList] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState<any>({
     type: "1",
     name: "",
@@ -30,13 +30,19 @@ const Hall = () => {
     music: "",
   });
 
-  const getDMList = () => {
+  const getDMList = (type) => {
     getSayList(id).then((res: any) => {
       setSayList(res.data.items);
+      if (ifLoop && type === "1") {
+        setTimeout(() => {
+          getDMList("1")
+        }, commonConfig.loopTime)
+      }
     });
   };
 
   useEffect(() => {
+    ifLoop = true
     getCemeteryDetail(id).then((res: any) => {
       let data: any = {};
       if (res.data.item.type === "2") {
@@ -60,7 +66,6 @@ const Hall = () => {
             music: commonConfig.musicBaseUrl + val[1].data.resId,
           };
           setFormData(data);
-          setLoading(true)
         })
       } else {
         Promise.all([
@@ -76,7 +81,10 @@ const Hall = () => {
         })
       }
     });
-    getDMList();
+    getDMList("1");
+    return () => {
+      ifLoop = false
+    }
   }, []);
 
   return (
@@ -180,7 +188,7 @@ const Hall = () => {
                     sendSay(id, 0, "张三", e.target.value).then(() => {
                       e.target.value = "";
                       Toast.success("发送成功", 1);
-                      getDMList();
+                      getDMList("0");
                     });
                   }
                 }}
@@ -262,7 +270,7 @@ const Hall = () => {
                 onClick={() => {
                   sendSay(id, modalFormData.lwType, "张三", "").then(() => {
                     Toast.success("发送成功", 1);
-                    getDMList();
+                    getDMList("0");
                     setModalFormData({
                       ...modalFormData,
                       visible: false,

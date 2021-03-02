@@ -22,8 +22,7 @@ export const getList = async (cemeteryCodel: string) => {
 
 export const getCemeteryList = async () => {
   return axios({
-    url:
-      "https://www.fastmock.site/mock/7f0cf10b888d227e74f3c408413b8cd5/mobile/api/cemetery/anon/cemetery/cemeteryList",
+    url: commonConfig.getCemeteryList,
     method: "post",
   });
 };
@@ -33,6 +32,7 @@ export const uploadImg = async (formData) => {
     url: "/wx/public/resource/upload",
     method: "post",
     data: formData,
+    baseURL: commonConfig.baseURL,
   });
 };
 

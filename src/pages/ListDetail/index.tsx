@@ -13,16 +13,28 @@ const ListDetail = (): React.ReactElement => {
   const [ifDouble, setIfDouble] = useState(false);
 
   const share = () => {
+    let h5 = {
+      title: commonConfig.shareTitle,
+      content: commonConfig.shareContent,
+      shareUrl: `https://cdn.internetofcity.cn/app/openWeapp/open-weapp.html?path=${encodeURIComponent(
+        commonConfig.shareURL
+      )}`,
+      icon: 'https://super-app-01.oss-cn-north-2-gov-1.aliyuncs.com/lx/images/jiayuan/jiayuan_share.jpg',
+    }
+    let type = "1"
+    let shareObj = h5
     commonConfig.ls.share(
       {
-        type: "1",
-        data: [],
-        platformType: '1'
+        type,
+        ...shareObj
       },
       function (res) {
         if (res.code === 200) {
           Toast.success('分享成功', 2)
-          console.log(res.data.platform);
+          console.log(res);
+        } else {
+          Toast.fail('分享失败', 2)
+          console.log(res)
         }
       }
     );
@@ -34,18 +46,17 @@ const ListDetail = (): React.ReactElement => {
       data = res.data.items.map((item: any) => {
         // 双人堂
         if (item.name.split(",").length > 1) {
-          setIfDouble(true);
           return {
             id: item.id,
-            name1: item.name.trim().split(",")[0],
+            name: item.name.trim().split(",")[0],
             name2: item.name.trim().split(",")[1],
-            life1: item.life.trim().split(",")[0],
+            life: item.life.trim().split(",")[0],
             life2: item.life.trim().split(",")[1],
-            birthday1: item.birthday.trim().split(",")[0],
+            birthday: item.birthday.trim().split(",")[0],
             birthday2: item.birthday.trim().split(",")[1],
-            goneday1: item.goneday.trim().split(",")[0],
+            goneday: item.goneday.trim().split(",")[0],
             goneday2: item.goneday.trim().split(",")[1],
-            photo1: `${commonConfig.imgBaseUrl + item.photo.trim().split(",")[0]
+            photo: `${commonConfig.imgBaseUrl + item.photo.trim().split(",")[0]
               }`,
             photo2: `${commonConfig.imgBaseUrl + item.photo.trim().split(",")[1]
               }`,
@@ -82,19 +93,19 @@ const ListDetail = (): React.ReactElement => {
               <div className="container-item" key={item + "_" + index}>
                 <div className="item-top">
                   <div className="item-pic">
-                    <img src={item.photo1} alt="" />
+                    <img src={item.photo} alt="" />
                   </div>
                   <div className="top-detail">
                     <div className="detail-name">
-                      <span>{item.name1}</span>
+                      <span>{item.name}</span>
                       <div className="item-edit">
                         <img alt="" src="/imgs/edit.png" />
                       </div>
                     </div>
                     <span className="item-date">
-                      {item.birthday1}—{item.goneday1}
+                      {item.birthday}—{item.goneday}
                     </span>
-                    <span className="item-node">生平简介：{item.life1}</span>
+                    <span className="item-node">生平简介：{item.life}</span>
                   </div>
                 </div>
                 <div className="item-line"></div>

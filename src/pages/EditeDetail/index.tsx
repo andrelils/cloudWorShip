@@ -357,13 +357,14 @@ const EditeDetail = (): React.ReactElement => {
             imgsList.map((item) => {
               return (
                 <div
+                  key={Math.random()}
                   className={formData.back === item.id ? "bg-radio active" : "bg-radio"}
                   onClick={() => {
                     setFormData({ ...formData, back: item.id });
                   }}
                 >
-                  <img src={commonConfig.imgBaseUrl + item.resId} alt="" />
-                  <span>{item.type}</span>
+                  <img src={commonConfig.imgBaseUrl + item.miniResId} alt="" />
+                  <span>{item.code}</span>
                 </div>
               )
             })
@@ -379,13 +380,14 @@ const EditeDetail = (): React.ReactElement => {
             {
               musicList.map((item) => {
                 return <div
+                  key={Math.random()}
                   className={formData.music === item.id ? "active" : ""}
                   onClick={() => {
                     setFormData({ ...formData, music: item.id });
                   }}
                 >
                   <img src="/imgs/music-logo.png" alt="" />
-                  {item.type}
+                  {item.code}
                 </div>
               })
             }

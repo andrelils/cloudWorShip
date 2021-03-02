@@ -3,6 +3,7 @@ import { Icon, NavBar, WhiteSpace, SearchBar } from "antd-mobile";
 import { useHistory } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import "./commonNavBar.less";
+import { commonConfig } from "../../shared/config";
 
 interface CommonNavBarProps {
   title: string;
@@ -28,7 +29,6 @@ const CommonNavBar = (props: CommonNavBarProps) => {
       <div
         style={{ display: "flex", alignItems: "center" }}
         onClick={() => {
-          console.log(1);
           history.goBack();
           onBack && onBack();
         }}
@@ -60,43 +60,57 @@ const CommonNavBar = (props: CommonNavBarProps) => {
     }
   });
 
-  return (
-    <>
-      <Helmet>
-        <title>{title}</title>
-      </Helmet>
-      {searching ? (
-        <SearchBar
-          defaultValue={q}
-          placeholder="请输入编号、名称、人员、类型进行搜索"
-          ref={searchRef}
-          onSubmit={onSearch}
-          onCancel={onCancel}
-          cancelText={"取消"}
-          maxLength={100}
-        />
-      ) : (
-        <NavBar
-          className="home-bar"
-          mode={mode}
-          leftContent={leftContent}
-          rightContent={
-            search
-              ? [
-                  <Icon
-                    key={Math.random()}
-                    type="search"
-                    onClick={handleSearch}
-                  />,
-                ]
-              : rightContent
-          }
-        >
-          {children ? children : title}
-        </NavBar>
-      )}
-    </>
-  );
+  // useEffect(() => {
+  //   window.addEventListener('scroll', (e: any) => {
+  //     console.log(e.target.scrollTop)
+  //   });
+  //   return () => {
+  //     window.removeEventListener('scroll', () => { });
+  //   }
+  // }, [])
+
+  if (commonConfig.ifShowNavBar) {
+    return (
+      <>
+        <Helmet>
+          <title>{title}</title>
+        </Helmet>
+        {searching ? (
+          <SearchBar
+            defaultValue={q}
+            placeholder="请输入编号、名称、人员、类型进行搜索"
+            ref={searchRef}
+            onSubmit={onSearch}
+            onCancel={onCancel}
+            cancelText={"取消"}
+            maxLength={100}
+          />
+        ) : (
+            <NavBar
+              className="home-bar"
+              mode={mode}
+              leftContent={leftContent}
+              rightContent={
+                search
+                  ? [
+                    <Icon
+                      key={Math.random()}
+                      type="search"
+                      onClick={handleSearch}
+                    />,
+                  ]
+                  : rightContent
+              }
+            >
+              {children ? children : title}
+            </NavBar>
+          )}
+      </>
+    );
+  } else {
+    return <></>
+  }
+
 };
 
 export default CommonNavBar;
