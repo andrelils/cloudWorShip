@@ -13,8 +13,8 @@ let defaultConfig = {
   // SZ -- 上证  common--普通用户名密码登录
   loginType: "common",
   //获取公墓列表接口
-  // getCemeteryList: "https://www.fastmock.site/mock/7f0cf10b888d227e74f3c408413b8cd5/mobile/api/cemetery/anon/cemetery/cemeteryList",
-  getCemeteryList: "https://testapi.internetofcity.cn/api/cemetery/anon/cemetery/list",
+  getCemeteryList: "https://www.fastmock.site/mock/7f0cf10b888d227e74f3c408413b8cd5/mobile/api/cemetery/anon/cemetery/cemeteryList",
+  // getCemeteryList: "https://testapi.internetofcity.cn/api/cemetery/anon/cemetery/list",
   // 是否展示navBar
   ifShowNavBar: false,
   // 分享的地址
@@ -28,7 +28,7 @@ let defaultConfig = {
   // 登录页面返回主页的链接(上证)
   backHomeURL: "",
   //是否测试
-  ifText: false,
+  ifText: true,
   //appId
   appId: 'B400556199781376X'
 };

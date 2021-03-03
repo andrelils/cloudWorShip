@@ -26,7 +26,7 @@ import { commonConfig } from "../../shared/config/index";
 
 export const getQuery = (name) => {
   var reg = new RegExp("(^|&)?" + name + "=([^&]*)(&|$)");
-  var r = window.location.search.substr(1).match(reg); //从?之后开始匹配如getQuery(courseid)返回一个数组["courseid=8","","8","&",index:0,input:"courseid=8"]
+  var r = window.location.hash.substr(1).match(reg); //从?之后开始匹配如getQuery(courseid)返回一个数组["courseid=8","","8","&",index:0,input:"courseid=8"]
   if (r != null) return unescape(r[2]);
   return null;
 };
@@ -90,6 +90,10 @@ const EditeDetail = (): React.ReactElement => {
         Toast.fail("请填写祭拜对象逝世日期", 2);
         return false;
       }
+      if ((moment(formData.goneday).diff(moment(formData.birthday), "days") <= 0) || (moment(formData.goneday2).diff(moment(formData.birthday2), "days") <= 0)) {
+        Toast.fail("逝世日期应该大于出生日期", 2);
+        return false;
+      }
       if (formData.life === "") {
         Toast.fail("请填写祭拜对象生平", 2);
         return false;
@@ -117,6 +121,10 @@ const EditeDetail = (): React.ReactElement => {
       }
       if (formData.goneday === "") {
         Toast.fail("请填写祭拜对象逝世日期", 2);
+        return false;
+      }
+      if (moment(formData.goneday).diff(moment(formData.birthday), "days") <= 0) {
+        Toast.fail("逝世日期应该大于出生日期", 2);
         return false;
       }
       if (formData.life === "") {
@@ -253,7 +261,7 @@ const EditeDetail = (): React.ReactElement => {
           minDate={new Date(1111, 1, 1)}
           maxDate={new Date()}
           extra={"未输入"}
-          title="Select Date"
+          title="选择日期"
           format="YYYY-MM-DD"
           value={
             formData.birthday === "" ? undefined : new Date(formData.birthday)
@@ -272,7 +280,7 @@ const EditeDetail = (): React.ReactElement => {
           minDate={new Date(1111, 1, 1)}
           maxDate={new Date()}
           extra={"未输入"}
-          title="Select Date"
+          title="选择日期"
           format="YYYY-MM-DD"
           value={
             formData.goneday === "" ? undefined : new Date(formData.goneday)
@@ -302,7 +310,7 @@ const EditeDetail = (): React.ReactElement => {
               minDate={new Date(1111, 1, 1)}
               maxDate={new Date()}
               extra={"未输入"}
-              title="Select Date"
+              title="选择日期"
               format="YYYY-MM-DD"
               value={
                 formData.birthday2 === "" || formData.birthday2 === undefined
@@ -323,7 +331,7 @@ const EditeDetail = (): React.ReactElement => {
               minDate={new Date(1111, 1, 1)}
               maxDate={new Date()}
               extra={"未输入"}
-              title="Select Date"
+              title="选择日期"
               format="YYYY-MM-DD"
               value={
                 formData.goneday2 === "" || formData.goneday2 === undefined

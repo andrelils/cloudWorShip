@@ -10,6 +10,7 @@ let ifLoop = true
 const Hall = () => {
   const [ifPlay, setIfPlay] = useState(false);
   const { id } = useParams();
+  const [nickName, setNickName] = useState<string>("")
   const [modalFormData, setModalFormData] = useState({
     visible: false,
     type: "",
@@ -42,6 +43,7 @@ const Hall = () => {
   };
 
   useEffect(() => {
+    setNickName(sessionStorage.getItem("nickName"))
     ifLoop = true
     getCemeteryDetail(id).then((res: any) => {
       let data: any = {};
@@ -114,7 +116,7 @@ const Hall = () => {
                     </div>
                     <div className="lw-num">
                       <img src="/imgs/lw-hua.png" alt="" />
-                      <span className="num">x 2</span>
+                      <span className="num">x{item.content}</span>
                     </div>
                   </div>
                 </div>
@@ -130,7 +132,7 @@ const Hall = () => {
                     </div>
                     <div className="lw-num">
                       <img src="/imgs/lw-lazhu.png" alt="" />
-                      <span className="num">x 2</span>
+                      <span className="num">x{item.content}</span>
                     </div>
                   </div>
                 </div>
@@ -146,7 +148,7 @@ const Hall = () => {
                     </div>
                     <div className="lw-num">
                       <img src="/imgs/lw-xl.png" alt="" />
-                      <span className="num">x 2</span>
+                      <span className="num">x{item.content}</span>
                     </div>
                   </div>
                 </div>
@@ -185,7 +187,7 @@ const Hall = () => {
                 placeholder="发送祝福"
                 onKeyDown={(e: any) => {
                   if (e.key === "Enter") {
-                    sendSay(id, 0, "张三", e.target.value).then(() => {
+                    sendSay(id, 0, nickName, e.target.value).then(() => {
                       e.target.value = "";
                       Toast.success("发送成功", 1);
                       getDMList("0");
@@ -240,7 +242,7 @@ const Hall = () => {
               />
             </div>
           </div>
-          {ifPlay && <audio src={formData.music} autoPlay></audio>}
+          {ifPlay && <audio loop src={formData.music} autoPlay></audio>}
           <Modal
             className="lw-modal"
             popup
@@ -268,7 +270,7 @@ const Hall = () => {
               <div
                 className="send"
                 onClick={() => {
-                  sendSay(id, modalFormData.lwType, "张三", "").then(() => {
+                  sendSay(id, modalFormData.lwType, nickName, modalFormData.send_num).then(() => {
                     Toast.success("发送成功", 1);
                     getDMList("0");
                     setModalFormData({

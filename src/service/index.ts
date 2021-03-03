@@ -1,3 +1,4 @@
+import moment from 'moment';
 import ajax from "../config/axios.config";
 import axios from "axios";
 import { commonConfig } from "../shared/config/index";
@@ -103,5 +104,87 @@ export const getPicOrMusic = (id) => {
   return ajax({
     url: `/wx/public/back/res/${id}`,
     method: "get"
+  })
+}
+
+// //获取认证授权码  获取authCode  2.2
+// export const getRZCode = async (cipherText) => {
+//   return axios({
+//     url: commonConfig.getRZCode,
+//     method: 'post',
+//     data: {
+//       appId: commonConfig.appId,
+//       timestamp: moment().unix(),
+//       randomSeries: Math.floor((Math.random() + Math.floor(Math.random() * 9 + 1)) * Math.pow(10, 9)),
+//       cipherText: cipherText
+//     }
+//   })
+// }
+
+// //获取平台访问令牌 accessToken  refreshToken  2.3
+// export const getFWCode = async (authCode) => {
+//   return axios({
+//     url: commonConfig.getFWCode,
+//     method: 'post',
+//     data: {
+//       appId: commonConfig.appId,
+//       authCode: authCode
+//     }
+//   })
+// }
+
+// //校验平台访问令牌  2.6
+// export const checkFWCode = async (accessToken) => {
+//   return axios({
+//     url: commonConfig.checkFWCode,
+//     method: 'post',
+//     data: {
+//       appId: commonConfig.appId,
+//       accessToken: accessToken
+//     }
+//   })
+// }
+
+// //刷新平台访问令牌  2.7
+// export const refreshFWCode = async (refreshToken) => {
+//   return axios({
+//     url: commonConfig.refreshFWCode,
+//     method: 'post',
+//     data: {
+//       appId: commonConfig.appId,
+//       refreshToken: refreshToken
+//     }
+//   })
+// }
+
+// //获取⽤户访问令牌  userAccessToken
+// export const getUserCode = async (accessToken, requestCode) => {
+//   return axios({
+//     url: commonConfig.getUserCode,
+//     method: 'post',
+//     data: {
+//       appId: commonConfig.appId,
+//       accessToken: accessToken,
+//       requestCode: requestCode
+//     }
+//   })
+// }
+
+// // 获取⽤户基本信息
+// export const getUserMessage = async (userAccessToken) => {
+//   return axios({
+//     url: commonConfig.getUserMessage,
+//     method: 'post',
+//     data: {
+//       appId: commonConfig.appId,
+//       userAccessToken: userAccessToken,
+//     }
+//   })
+// }
+
+export const getUserInfo = (requestCode) => {
+  return axios({
+    url: commonConfig.backHomeURL + `/wx/lx/getUserInfo?requestCode=${requestCode}`,
+    method: "get",
   })
 }
