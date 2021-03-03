@@ -103,6 +103,10 @@ const EditeDetail = (): React.ReactElement => {
         Toast.fail("请选择背景音乐", 2);
         return false;
       }
+      if (fileList.length < 2) {
+        Toast.fail("请上传头像", 2);
+        return false;
+      }
     } else {
       if (formData.name === "") {
         Toast.fail("请填写逝者姓名", 2);
@@ -128,7 +132,7 @@ const EditeDetail = (): React.ReactElement => {
         Toast.fail("请选择背景音乐", 2);
         return false;
       }
-      if ((formData.type === "1" && fileList.length < 1) || (formData.type === "2" && fileList.length < 2)) {
+      if (fileList.length < 1) {
         Toast.fail("请上传头像", 2);
         return false;
       }
