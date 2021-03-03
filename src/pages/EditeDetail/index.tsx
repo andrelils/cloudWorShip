@@ -25,14 +25,13 @@ import {
 import { commonConfig } from "../../shared/config/index";
 
 export const getQuery = (name) => {
-  var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+  var reg = new RegExp("(^|&)?" + name + "=([^&]*)(&|$)");
   var r = window.location.search.substr(1).match(reg); //从?之后开始匹配如getQuery(courseid)返回一个数组["courseid=8","","8","&",index:0,input:"courseid=8"]
   if (r != null) return unescape(r[2]);
   return null;
 };
 
 const EditeDetail = (): React.ReactElement => {
-  const cemeteryCode = getQuery("cemeteryCode");
   const [fileList, setFileList] = useState([]);
   const [imgsList, setImgsList] = useState([])
   const [musicList, setMusicList] = useState([])
