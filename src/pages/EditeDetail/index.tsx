@@ -7,6 +7,7 @@ import {
   InputItem,
   DatePicker,
   List,
+  Checkbox,
   TextareaItem,
   Button,
   Modal,
@@ -61,9 +62,13 @@ const EditeDetail = (): React.ReactElement => {
     var formData = new FormData();
     formData.append("file", file);
     uploadImg(formData).then((res: any) => {
-      let list = [...fileList];
-      list.push({ url: commonConfig.imgBaseUrl + res.data.data.resId, id: res.data.data.resId });
-      setFileList(list);
+      if (res.data.code == 20000) {
+        let list = [...fileList];
+        list.push({ url: commonConfig.imgBaseUrl + res.data.data.resId, id: res.data.data.resId });
+        setFileList(list);
+      } else {
+        Toast.fail(res.data.msg, 2)
+      }
     });
   };
 
@@ -95,11 +100,11 @@ const EditeDetail = (): React.ReactElement => {
         return false;
       }
       if (formData.life === "") {
-        Toast.fail("请填写祭拜对象生平", 2);
+        Toast.fail("请填写逝者生平简介", 2);
         return false;
       }
       if (formData.back === "") {
-        Toast.fail("请选择背景图片", 2);
+        Toast.fail("请选择祈福堂背景", 2);
         return false;
       }
       if (formData.music === "") {
@@ -108,6 +113,10 @@ const EditeDetail = (): React.ReactElement => {
       }
       if (fileList.length < 2) {
         Toast.fail("请上传头像", 2);
+        return false;
+      }
+      if (!formData.checked) {
+        Toast.fail("请先勾选协议", 2);
         return false;
       }
     } else {
@@ -128,11 +137,11 @@ const EditeDetail = (): React.ReactElement => {
         return false;
       }
       if (formData.life === "") {
-        Toast.fail("请填写祭拜对象生平", 2);
+        Toast.fail("请填写逝者生平简介", 2);
         return false;
       }
       if (formData.back === "") {
-        Toast.fail("请选择背景图片", 2);
+        Toast.fail("请选择祈福堂背景", 2);
         return false;
       }
       if (formData.music === "") {
@@ -141,6 +150,10 @@ const EditeDetail = (): React.ReactElement => {
       }
       if (fileList.length < 1) {
         Toast.fail("请上传头像", 2);
+        return false;
+      }
+      if (!formData.checked) {
+        Toast.fail("请先勾选协议", 2);
         return false;
       }
     }
@@ -221,6 +234,10 @@ const EditeDetail = (): React.ReactElement => {
               formData.type === "1" ? fileList.length < 1 : fileList.length < 2
             }
           />
+          {
+            ((formData.type === "2" && fileList.length < 2) || (formData.type === "1" && fileList.length < 1)) &&
+            <span className="pic-note">请上传逝者头像</span>
+          }
         </div>
       </div>
       <div className="detail-container">
@@ -228,7 +245,11 @@ const EditeDetail = (): React.ReactElement => {
           <div
             className={formData.type === "1" ? "active" : ""}
             onClick={() => {
-              setFormData({ ...formData, type: "1" });
+              if (!getQuery("id")) {
+                setFormData({ ...formData, type: "1" });
+              } else {
+                Toast.fail('编辑状态下不允许切换', 2)
+              }
             }}
           >
             单人堂
@@ -237,7 +258,11 @@ const EditeDetail = (): React.ReactElement => {
           <div
             className={formData.type === "2" ? "active" : ""}
             onClick={() => {
-              setFormData({ ...formData, type: "2" });
+              if (!getQuery("id")) {
+                setFormData({ ...formData, type: "2" });
+              } else {
+                Toast.fail('编辑状态下不允许切换', 2)
+              }
             }}
           >
             两人堂
@@ -252,7 +277,8 @@ const EditeDetail = (): React.ReactElement => {
           onChange={(e) => {
             setFormData({ ...formData, name: e });
           }}
-          placeholder="请输入逝者名字"
+          maxLength={10}
+          placeholder="请输入逝者姓名"
         >
           逝者姓名
         </InputItem>
@@ -260,7 +286,7 @@ const EditeDetail = (): React.ReactElement => {
           mode="date"
           minDate={new Date(1111, 1, 1)}
           maxDate={new Date()}
-          extra={"未输入"}
+          extra={"请选择"}
           title="选择日期"
           format="YYYY-MM-DD"
           value={
@@ -279,7 +305,7 @@ const EditeDetail = (): React.ReactElement => {
           mode="date"
           minDate={new Date(1111, 1, 1)}
           maxDate={new Date()}
-          extra={"未输入"}
+          extra={"请选择"}
           title="选择日期"
           format="YYYY-MM-DD"
           value={
@@ -301,6 +327,7 @@ const EditeDetail = (): React.ReactElement => {
               onChange={(e) => {
                 setFormData({ ...formData, name2: e });
               }}
+              maxLength={10}
               placeholder="请输入名字"
             >
               逝者姓名
@@ -309,7 +336,7 @@ const EditeDetail = (): React.ReactElement => {
               mode="date"
               minDate={new Date(1111, 1, 1)}
               maxDate={new Date()}
-              extra={"未输入"}
+              extra={"请选择"}
               title="选择日期"
               format="YYYY-MM-DD"
               value={
@@ -330,7 +357,7 @@ const EditeDetail = (): React.ReactElement => {
               mode="date"
               minDate={new Date(1111, 1, 1)}
               maxDate={new Date()}
-              extra={"未输入"}
+              extra={"请选择"}
               title="选择日期"
               format="YYYY-MM-DD"
               value={
@@ -354,7 +381,8 @@ const EditeDetail = (): React.ReactElement => {
           title="生平简介"
           placeholder="请输入生平简介"
           value={formData.life}
-          rows={2}
+          rows={3}
+          count={100}
           onChange={(e) => {
             setFormData({ ...formData, life: e });
           }}
@@ -404,9 +432,12 @@ const EditeDetail = (): React.ReactElement => {
             }
           </div>
         </div>
-
+        <div className="note-check">
+          <Checkbox.AgreeItem checked={formData.checked} onChange={(e) => { setFormData({ ...formData, checked: !formData.checked }) }} ><span style={{ color: 'red', fontSize: '0.13rem' }}>本人郑重承诺，以上填写内容均真实有效，如有任何虚假、捏造内容，愿承担相应法律责任。</span></Checkbox.AgreeItem>
+        </div>
         <div className="btn-footer">
           <Button
+            disabled={!formData.checked}
             className="btn-save"
             onClick={() => {
               if (checkData()) {
@@ -437,25 +468,27 @@ const EditeDetail = (): React.ReactElement => {
           >
             保存
           </Button>
-          <Button
-            className="btn-del"
-            onClick={() => {
-              Modal.alert("是否删除", "确定删除吗？", [
-                { text: "取消", onPress: () => console.log("取消") },
-                {
-                  text: "Ok",
-                  onPress: () => {
-                    deleteCemetery(getQuery("id")).then((res: any) => {
-                      Toast.success("删除成功");
-                      history.goBack();
-                    });
+          {getQuery("id") !== null &&
+            <Button
+              className="btn-del"
+              onClick={() => {
+                Modal.alert("是否删除", "确定删除吗？", [
+                  { text: "取消", onPress: () => console.log("取消") },
+                  {
+                    text: "Ok",
+                    onPress: () => {
+                      deleteCemetery(getQuery("id")).then((res: any) => {
+                        Toast.success("删除成功");
+                        history.goBack();
+                      });
+                    },
                   },
-                },
-              ]);
-            }}
-          >
-            删除
-          </Button>
+                ]);
+              }}
+            >
+              删除
+            </Button>
+          }
         </div>
       </div>
     </div>

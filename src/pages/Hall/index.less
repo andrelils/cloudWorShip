@@ -10,9 +10,11 @@
 
 .page-hall {
   height: 100%;
+  overflow: hidden;
 
   .hall-container {
     display: flex;
+    overflow: hidden;
     flex-direction: column;
     height: 100%;
 
@@ -29,6 +31,12 @@
         animation: moveIn 1.2s;
         -webkit-animation: moveIn 1.2s;
         max-width: calc(100% - 0.1rem);
+      }
+
+      .note-text {
+        flex-direction: column;
+
+        .note-title {}
       }
 
       .hall-note {
@@ -78,10 +86,11 @@
         }
 
         .note-title {
-          color: #27fef6
+          color: #27fef6;
+          font-size: 0.13rem;
+          margin-bottom: 0.05rem;
         }
       }
-
     }
 
     .hall-bg {

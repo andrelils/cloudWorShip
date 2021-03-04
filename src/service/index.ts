@@ -184,7 +184,8 @@ export const getPicOrMusic = (id) => {
 
 export const getUserInfo = (requestCode) => {
   return axios({
-    url: commonConfig.backHomeURL + `/wx/lx/getUserInfo?requestCode=${requestCode}`,
+    url: `/wx/lx/getUserInfo?requestCode=${requestCode}`,
     method: "get",
+    baseURL: commonConfig.baseURL,
   })
 }

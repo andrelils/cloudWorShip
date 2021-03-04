@@ -43,7 +43,7 @@ const Hall = () => {
   };
 
   useEffect(() => {
-    setNickName(sessionStorage.getItem("nickName"))
+    setNickName(sessionStorage.getItem("nickname"))
     ifLoop = true
     getCemeteryDetail(id).then((res: any) => {
       let data: any = {};
@@ -83,7 +83,6 @@ const Hall = () => {
         })
       }
     });
-    getDMList("1");
     return () => {
       ifLoop = false
     }
@@ -99,9 +98,9 @@ const Hall = () => {
             if (item.type === 0) {
               return (
                 <div className="dm-item" key={item.id}>
-                  <div className="hall-note">
+                  <div className="hall-note note-text">
                     <span className="note-title">{item.name}：</span>
-                    <span style={{ flex: 1 }}>{item.content}</span>
+                    <span style={{ flex: 1, fontSize: '0.13rem' }}>{item.content}</span>
                   </div>
                 </div>
               );
@@ -184,6 +183,7 @@ const Hall = () => {
           <div className="operate-group">
             <div className="input-dm">
               <input
+                onFocus={() => getDMList("1")}
                 placeholder="发送祝福"
                 onKeyDown={(e: any) => {
                   if (e.key === "Enter") {

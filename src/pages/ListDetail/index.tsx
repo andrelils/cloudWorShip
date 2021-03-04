@@ -83,7 +83,6 @@ const ListDetail = (): React.ReactElement => {
               history.push(`/editeDetail?cemeteryCode=${id}`);
             }}
           ></img>
-          <span>祈福堂</span>
         </div>
       </div>
       <div className="list-container">
@@ -99,7 +98,7 @@ const ListDetail = (): React.ReactElement => {
                     <div className="detail-name">
                       <span>{item.name}</span>
                       <div className="item-edit">
-                        <img alt="" src="/imgs/edit.png" />
+                        {/* <img alt="" src="/imgs/edit.png" /> */}
                       </div>
                     </div>
                     <span className="item-date">
@@ -157,7 +156,7 @@ const ListDetail = (): React.ReactElement => {
                     <div className="detail-name">
                       <span>{item.name}</span>
                       <div className="item-edit" onClick={() => share()}>
-                        <img alt="" src="/imgs/edit.png" />
+                        {/* <img alt="" src="/imgs/edit.png" /> */}
                       </div>
                     </div>
                     <span className="item-date">

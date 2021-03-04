@@ -1,5 +1,6 @@
 const CracoLessPlugin = require("craco-less");
 const px2rem = require("postcss-px2rem-exclude");
+const autoprefixer = require('autoprefixer');
 const isDev = process.env.NODE_ENV === "development" ? true : false; // 判断是否是开发模式还是打包模式
 var proxy = require("http-proxy-middleware");
 
@@ -10,6 +11,8 @@ module.exports = isDev
           loaderOptions: {
             ident: "postcss",
             plugins: () => [
+            autoprefixer(),
+
               // 100px转1rem
               px2rem({
                 remUnit: 100,
@@ -50,6 +53,7 @@ module.exports = isDev
           loaderOptions: {
             ident: "postcss",
             plugins: () => [
+            autoprefixer(),
               // 100px转1rem
               px2rem({
                 remUnit: 100,

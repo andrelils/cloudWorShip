@@ -22,7 +22,7 @@ const SweepingOptions = (): React.ReactElement => {
       <div className="common-btn btn" onClick={() => Toast.fail("敬请期待！")}>
         公共祭扫
       </div>
-      <div className="float-num">{num}人参与祭扫</div>
+      {/* <div className="float-num">{num}人参与祭扫</div> */}
     </div>
   );
 };

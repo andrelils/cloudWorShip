@@ -26,6 +26,22 @@
       vertical-align: middle;
       text-align: center;
 
+      .am-image-picker-list {
+        padding-top: 0;
+        height: calc(100% - 0.3rem);
+      }
+
+      .pic-note {
+        position: absolute;
+        top: calc(50% + 0.45rem);
+        left: 0;
+        width: 100%;
+        text-align: center;
+        color: #fff;
+        font-size: 0.1rem;
+        padding-right: 0.1rem;
+      }
+
       .am-flexbox {
         justify-content: center;
 
@@ -270,15 +286,23 @@
     }
   }
 
+  .note-check {
+    padding-top: 0.3rem;
+    padding-bottom: 0.2rem;
+
+    .am-checkbox-agree {
+      margin-left: 0;
+    }
+  }
+
   .btn-footer {
-    padding-top: 0.5rem;
     padding-bottom: 0.2rem;
     display: flex;
     justify-content: center;
 
 
     .btn-del {
-      width: 1.5rem;
+      flex: 1;
       height: 0.4rem;
       line-height: 0.4rem;
       border: 1px solid #8f8f8f;
@@ -288,7 +312,7 @@
 
     .btn-save {
       margin-right: 0.2rem;
-      width: 1.5rem;
+      flex: 1;
       height: 0.4rem;
       line-height: 0.4rem;
       border-radius: 0.06rem;
