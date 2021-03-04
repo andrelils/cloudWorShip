@@ -92,7 +92,9 @@ const ListDetail = (): React.ReactElement => {
               <div className="container-item" key={item + "_" + index}>
                 <div className="item-top">
                   <div className="item-pic">
-                    <img src={item.photo} alt="" />
+                    <div className="pic-container">
+                      <img src={item.photo} alt="" />
+                    </div>
                   </div>
                   <div className="top-detail">
                     <div className="detail-name">
@@ -150,7 +152,9 @@ const ListDetail = (): React.ReactElement => {
               <div className="container-item" key={item + "_" + index}>
                 <div className="item-top">
                   <div className="item-pic">
-                    <img src={item.photo} alt="" />
+                    <div className="pic-container">
+                      <img src={item.photo} alt="" />
+                    </div>
                   </div>
                   <div className="top-detail">
                     <div className="detail-name">
