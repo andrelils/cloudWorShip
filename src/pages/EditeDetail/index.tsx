@@ -95,7 +95,7 @@ const EditeDetail = (): React.ReactElement => {
         Toast.fail("请填写祭拜对象逝世日期", 2);
         return false;
       }
-      if ((moment(formData.goneday).diff(moment(formData.birthday), "days") <= 0) || (moment(formData.goneday2).diff(moment(formData.birthday2), "days") <= 0)) {
+      if ((moment(formData.goneday).diff(moment(formData.birthday), "days") < 0) || (moment(formData.goneday2).diff(moment(formData.birthday2), "days") < 0)) {
         Toast.fail("逝世日期应该大于出生日期", 2);
         return false;
       }
@@ -132,7 +132,7 @@ const EditeDetail = (): React.ReactElement => {
         Toast.fail("请填写祭拜对象逝世日期", 2);
         return false;
       }
-      if (moment(formData.goneday).diff(moment(formData.birthday), "days") <= 0) {
+      if (moment(formData.goneday).diff(moment(formData.birthday), "days") < 0) {
         Toast.fail("逝世日期应该大于出生日期", 2);
         return false;
       }
@@ -163,54 +163,67 @@ const EditeDetail = (): React.ReactElement => {
 
 
   useEffect(() => {
-    getImgMusicList()
-    if (getQuery("id") === null) {
-      setFormData({
-        type: "1",
-        name: "",
-        name2: "",
-        birthday: "",
-        goneday: "",
-        birthday2: "",
-        goneday2: "",
-        life: "",
-        back: "",
-        music: "",
-      });
-    } else {
-      getCemeteryDetail(getQuery("id")).then((res: any) => {
-        let data: any = {};
-        let item = res.data.item
-        // 双人堂
-        if (item.name.split(",").length > 1) {
-          data = {
-            type: "2",
-            name: item.name.trim().split(",")[0],
-            name2: item.name.trim().split(",")[1],
-            life: item.life,
-            birthday: item.birthday.trim().split(",")[0],
-            birthday2: item.birthday.trim().split(",")[1],
-            goneday: item.goneday.trim().split(",")[0],
-            goneday2: item.goneday.trim().split(",")[1],
-            photo1: `${commonConfig.imgBaseUrl + item.photo.trim().split(",")[0]
-              }`,
-            photo2: `${commonConfig.imgBaseUrl + item.photo.trim().split(",")[1]
-              }`,
-            back: item.back,
-            music: item.music,
-          };
-          setFileList([{ url: data.photo1, id: item.photo.trim().split(",")[0] }, { url: data.photo2, id: item.photo.trim().split(",")[1] }]);
-        } else {
-          data = {
-            ...item,
-            type: "1",
-            photo: `${commonConfig.imgBaseUrl + item.photo}`,
-          };
-          setFileList([{ url: data.photo, id: item.photo }]);
-        }
-        setFormData(data);
-      });
-    }
+    Promise.all([
+      getImgsList().then((res: any) => {
+        setImgsList(res.data.items)
+        return res.data.items
+      }),
+      getMusicsList().then((res: any) => {
+        setMusicList(res.data.items)
+        return res.data.items
+      })
+    ]).then((res) => {
+      if (getQuery("id") === null) {
+        setFormData({
+          type: "1",
+          name: "",
+          name2: "",
+          birthday: "",
+          goneday: "",
+          birthday2: "",
+          goneday2: "",
+          life: "",
+          back: res[0][0].id,
+          music: res[1][0].id,
+        });
+      } else {
+        getCemeteryDetail(getQuery("id")).then((res: any) => {
+          let data: any = {};
+          let item = res.data.item
+          // 双人堂
+          if (item.name.split(",").length > 1) {
+            data = {
+              type: "2",
+              name: item.name.trim().split(",")[0],
+              name2: item.name.trim().split(",")[1],
+              life: item.life,
+              birthday: item.birthday.trim().split(",")[0],
+              birthday2: item.birthday.trim().split(",")[1],
+              goneday: item.goneday.trim().split(",")[0],
+              goneday2: item.goneday.trim().split(",")[1],
+              photo1: `${commonConfig.imgBaseUrl + item.photo.trim().split(",")[0]
+                }`,
+              photo2: `${commonConfig.imgBaseUrl + item.photo.trim().split(",")[1]
+                }`,
+              back: item.back,
+              music: item.music,
+            };
+            setFileList([{ url: data.photo1, id: item.photo.trim().split(",")[0] }, { url: data.photo2, id: item.photo.trim().split(",")[1] }]);
+          } else {
+            data = {
+              ...item,
+              type: "1",
+              photo: `${commonConfig.imgBaseUrl + item.photo}`,
+            };
+            setFileList([{ url: data.photo, id: item.photo }]);
+          }
+          setFormData(data);
+        });
+      }
+    })
+
+
+
   }, []);
 
   return (
@@ -299,7 +312,9 @@ const EditeDetail = (): React.ReactElement => {
             })
           }
         >
-          <List.Item>出生日期</List.Item>
+          <List.Item
+            className={formData.birthday === "" ? "data-pick" : ""}
+          >出生日期</List.Item>
         </DatePicker>
         <DatePicker
           mode="date"
@@ -318,7 +333,9 @@ const EditeDetail = (): React.ReactElement => {
             })
           }
         >
-          <List.Item>逝世日期</List.Item>
+          <List.Item
+            className={formData.goneday === "" ? "data-pick" : ""}
+          >逝世日期</List.Item>
         </DatePicker>
         {formData.type === "2" && (
           <>
@@ -351,7 +368,9 @@ const EditeDetail = (): React.ReactElement => {
                 })
               }
             >
-              <List.Item>出生日期</List.Item>
+              <List.Item
+                className={formData.birthday2 === "" ? "data-pick" : ""}
+              >出生日期</List.Item>
             </DatePicker>
             <DatePicker
               mode="date"
@@ -372,7 +391,9 @@ const EditeDetail = (): React.ReactElement => {
                 })
               }
             >
-              <List.Item>逝世日期</List.Item>
+              <List.Item
+                className={formData.goneday2 === "" ? "data-pick" : ""}
+              >逝世日期</List.Item>
             </DatePicker>
           </>
         )}
