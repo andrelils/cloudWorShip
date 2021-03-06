@@ -24,7 +24,7 @@ import {
   getMusicsList
 } from "../../service/index";
 import { commonConfig } from "../../shared/config/index";
-
+let modal = null
 export const getQuery = (name) => {
   var reg = new RegExp("(^|&)?" + name + "=([^&]*)(&|$)");
   var r = window.location.hash.substr(1).match(reg); //从?之后开始匹配如getQuery(courseid)返回一个数组["courseid=8","","8","&",index:0,input:"courseid=8"]
@@ -163,6 +163,7 @@ const EditeDetail = (): React.ReactElement => {
 
 
   useEffect(() => {
+    modal = null
     Promise.all([
       getImgsList().then((res: any) => {
         setImgsList(res.data.items)
@@ -221,7 +222,11 @@ const EditeDetail = (): React.ReactElement => {
         });
       }
     })
-
+    return (() => {
+      if (modal !== null) {
+        modal.close()
+      }
+    })
 
 
   }, []);
@@ -493,10 +498,10 @@ const EditeDetail = (): React.ReactElement => {
             <Button
               className="btn-del"
               onClick={() => {
-                Modal.alert("是否删除", "确定删除吗？", [
+                modal = Modal.alert("是否删除", "确定删除吗？", [
                   { text: "取消", onPress: () => console.log("取消") },
                   {
-                    text: "Ok",
+                    text: "确认",
                     onPress: () => {
                       deleteCemetery(getQuery("id")).then((res: any) => {
                         Toast.success("删除成功");

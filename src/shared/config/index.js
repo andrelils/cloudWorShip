@@ -24,7 +24,7 @@ let defaultConfig = {
   //分享的content
   shareContent: "测试云祭扫分享",
   //轮询时间
-  loopTime: 1000,
+  loopTime: 1000*60*10,
   // 登录页面返回主页的链接(上证)
   backHomeURL: "",
   //是否测试
