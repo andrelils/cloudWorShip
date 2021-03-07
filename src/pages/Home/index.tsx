@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import "./index.less";
+import "../SweepingOptions/index.less";
 import { CommonNavBar } from "../../components/index";
 import { useHistory } from "react-router-dom";
 import { initCode, getUserInfo } from "../../service/index";
@@ -49,55 +49,21 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="page-home">
-      <CommonNavBar title="祭扫预约"></CommonNavBar>
-      <div className="home-top">
-        <img src="/imgs/home-bg.jpg" alt="" />
-        <span>清明</span>
+    <div className="sweeping-options">
+      <CommonNavBar title="云祭扫"></CommonNavBar>
+      <img src="/imgs/logo.png" alt="" />
+      <div
+        className="qy-btn btn"
+        onClick={() => {
+          history.push("/list");
+        }}
+      >
+        亲友祭扫
       </div>
-      <div className="home-container">
-        <div className="container-item">
-          <div className="item-icon">
-            <img src="/imgs/home-1.png" alt="" />
-          </div>
-          <div className="item-container">
-            <div className="item-title">扫墓预约</div>
-            <div className="item-memo">可进行扫墓预约事项</div>
-          </div>
-        </div>
-        <div
-          className="container-item"
-          onClick={() => {
-            history.push("/sweepingOptions");
-          }}
-        >
-          <div className="item-icon">
-            <img src="/imgs/home-2.png" alt="" />
-          </div>
-          <div className="item-container">
-            <div className="item-title">云祭扫</div>
-            <div className="item-memo">可进行亲友祈福</div>
-          </div>
-        </div>
-        <div className="container-item">
-          <div className="item-icon">
-            <img src="/imgs/home-3.png" alt="" />
-          </div>
-          <div className="item-container">
-            <div className="item-title">代为祭扫</div>
-            <div className="item-memo">可进行代为祭扫预约</div>
-          </div>
-        </div>
-        <div className="container-item">
-          <div className="item-icon">
-            <img src="/imgs/home-4.png" alt="" />
-          </div>
-          <div className="item-container">
-            <div className="item-title">我的预约</div>
-            <div className="item-memo">可查询申请的预约事项</div>
-          </div>
-        </div>
+      <div className="common-btn btn" onClick={() => Toast.fail("敬请期待！")}>
+        公共祭扫
       </div>
+      {/* <div className="float-num">{num}人参与祭扫</div> */}
     </div>
   );
 };

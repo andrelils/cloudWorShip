@@ -64,7 +64,7 @@ const EditeDetail = (): React.ReactElement => {
     uploadImg(formData).then((res: any) => {
       if (res.data.code == 20000) {
         let list = [...fileList];
-        list.push({ url: commonConfig.imgBaseUrl + res.data.data.resId, id: res.data.data.resId });
+        list.push({ url: commonConfig.imgBaseUrl + res.data.data.name, id: res.data.data.resId });
         setFileList(list);
       } else {
         Toast.fail(res.data.msg, 2)
@@ -209,14 +209,14 @@ const EditeDetail = (): React.ReactElement => {
               back: item.back,
               music: item.music,
             };
-            setFileList([{ url: data.photo1, id: item.photo.trim().split(",")[0] }, { url: data.photo2, id: item.photo.trim().split(",")[1] }]);
+            setFileList([{ url: data.photo1, id: item.resId.trim().split(",")[0] }, { url: data.photo2, id: item.resId.trim().split(",")[1] }]);
           } else {
             data = {
               ...item,
               type: "1",
               photo: `${commonConfig.imgBaseUrl + item.photo}`,
             };
-            setFileList([{ url: data.photo, id: item.photo }]);
+            setFileList([{ url: data.photo, id: item.resId }]);
           }
           setFormData(data);
         });
