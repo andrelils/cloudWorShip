@@ -28,7 +28,7 @@ let defaultConfig = {
   // 登录页面返回主页的链接(上证)
   backHomeURL: "",
   //是否测试
-  ifText: true,
+  ifText: false,
   //appId
   appId: 'B400556199781376X'
 };

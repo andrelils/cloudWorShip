@@ -41,11 +41,11 @@ const Home = () => {
         Toast.fail(res, 2)
       });
     });
-    // 测试
-    if (commonConfig.ifText) {
-      sessionStorage.setItem("cloud_token", "o7UIL40VlE6XJqNDlwcRhb3afCOk")
-      sessionStorage.setItem("login_flag", "1");
-    }
+    // // 测试
+    // if (commonConfig.ifText) {
+    //   sessionStorage.setItem("cloud_token", "o7UIL40VlE6XJqNDlwcRhb3afCOk")
+    //   sessionStorage.setItem("login_flag", "1");
+    // }
   }, []);
 
   return (
